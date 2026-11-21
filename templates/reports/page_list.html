@@ -37,9 +37,11 @@
     <div class="row g-3">
       {% for page in page_obj.object_list %}
         <div class="col-md-6 col-xl-4">
-          <article class="mt-card h-100 p-3 d-flex flex-column">
+          <article class="mt-card h-100 p-3 d-flex flex-column position-relative">
             <div class="d-flex justify-content-between align-items-start gap-2">
-              <h2 class="h6 fw-bold mb-1 text-break">{{ page.name }}</h2>
+              <h2 class="h6 fw-bold mb-1 text-break">
+                <a class="stretched-link text-decoration-none" href="{% url 'reports:page_detail' page.pk %}">{{ page.name }}</a>
+              </h2>
               {% include "partials/_trust_badge.html" with trust=page.trust compact=True %}
             </div>
             <div class="small text-secondary text-break mb-3">{{ page.url|cut:"https://www." }}</div>

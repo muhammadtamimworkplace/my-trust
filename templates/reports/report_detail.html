@@ -82,7 +82,7 @@
     <aside class="col-lg-4" aria-labelledby="page-heading">
       <div class="mt-card p-4">
         <h2 id="page-heading" class="h6 fw-bold text-secondary text-uppercase small mb-2">Reported page</h2>
-        <div class="fw-semibold mb-1">{{ report.page.name }}</div>
+        <a class="fw-semibold d-block mb-1" href="{% url 'reports:page_detail' report.page.pk %}">{{ report.page.name }}</a>
         <a class="small text-break" href="{{ report.page.url }}" target="_blank" rel="noopener noreferrer nofollow">
           {{ report.page.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
         </a>

@@ -8,8 +8,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import never_cache
 
 from .forms import AddEvidenceForm, PageSearchForm, ReportForm
-from .models import Evidence, ScamReport
-from .services import add_requested_evidence, reports_by_user, search_pages, submit_report
+from .models import Evidence, FacebookPage, ScamReport
+from .services import add_requested_evidence, page_overview, reports_by_user, search_pages, submit_report
 
 EVIDENCE_CONTENT_TYPES = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png"}
 REPORTS_PER_PAGE = 10
@@ -36,9 +36,26 @@ def page_list(request):
     return render(request, "reports/page_list.html", context)
 
 
+def page_detail(request, pk):
+    """One Facebook page: trust badge, verified reports, unverified allegations and feedback.
+
+    Pages without public information (only rejected reports, no visible feedback)
+    return 404, matching the page list, except for administrators.
+    """
+    page = get_object_or_404(FacebookPage.objects.select_related("trust"), pk=pk)
+    overview = page_overview(page)
+    has_public_info = overview["verified_total"] or overview["allegations_total"] or overview["feedback_total"]
+    if not has_public_info and not (request.user.is_authenticated and request.user.is_platform_admin):
+        raise Http404("Page not found.")
+    return render(request, "reports/page_detail.html", {"page": page, **overview})
+
+
 @login_required
 def report_create(request):
-    """Report a Facebook page. The report starts as 'Under review'."""
+    """Report a Facebook page. The report starts as 'Under review'.
+
+    `?page=<id>` pre-fills the page name and link ("Report this page" button).
+    """
     if request.method == "POST":
         form = ReportForm(request.POST, request.FILES)
         if form.is_valid():
@@ -56,7 +73,13 @@ def report_create(request):
             )
             return redirect("reports:report_detail", pk=report.pk)
     else:
-        form = ReportForm()
+        initial = {}
+        page_id = request.GET.get("page", "")
+        if page_id.isdigit():
+            page = FacebookPage.objects.filter(pk=page_id).first()
+            if page:
+                initial = {"page_name": page.name, "page_url": page.url}
+        form = ReportForm(initial=initial)
     return render(request, "reports/report_form.html", {"form": form})
 
 

@@ -53,6 +53,28 @@ def search_pages(query="", category="", verification=""):
     return pages.order_by("-last_reported", "name")
 
 
+SECTION_LIMIT = 20
+
+
+def page_overview(page):
+    """Public content of a page's detail view, in the three separate sections of guide §9.3.
+
+    Rejected reports are never included; hidden feedback is excluded.
+    """
+    public = page.reports.select_related("reporter").exclude(status=ScamReport.Status.REJECTED)
+    verified = public.filter(status=ScamReport.Status.APPROVED)
+    allegations = public.exclude(status=ScamReport.Status.APPROVED)
+    feedback = page.feedback.filter(is_hidden=False).select_related("user").order_by("-created_at")
+    return {
+        "verified_reports": verified[:SECTION_LIMIT],
+        "verified_total": verified.count(),
+        "allegations": allegations[:SECTION_LIMIT],
+        "allegations_total": allegations.count(),
+        "feedback": feedback[:SECTION_LIMIT],
+        "feedback_total": feedback.count(),
+    }
+
+
 def reports_by_user(user):
     """A user's own reports, newest first, with page and evidence count loaded in the
     same query (no extra query per row)."""
