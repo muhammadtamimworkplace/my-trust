@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P6-T01** · Branch: `feature/p5-reporting` (Phases 3–4 merged: `5e68a02`, `06cacfe`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P6-T02** · Branch: `feature/p6-trustscore` (Phases 3–5 merged: `5e68a02`, `06cacfe`, `227f867`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -97,7 +97,7 @@
 | P5 | T05 | Protected evidence serving | ✅ 22 Nov (7 tests; owner/admin only, no-store, /media/ not served) | `feat: serve evidence through access-controlled view` |
 | P5 | T06 | Add evidence on request | ✅ 22 Nov (9 tests; reporter only, back to review) | `feat: allow adding evidence when requested` |
 | P5 | T07 | Reporting tests | ✅ 22 Nov: covered by tests written in T01–T06; no separate commit | — |
-| P6 | T01 | Score calculation | ⬜ | |
+| P6 | T01 | Score calculation | ✅ 22 Nov (10 tests; pure function, half-up rounding) | `feat: implement trust score calculation` |
 | P6 | T02 | Persist & recalculate | ⬜ | |
 | P6 | T03 | Trust badge component | ⬜ | |
 | P7 | T01 | Page list search & filters | ⬜ | |
