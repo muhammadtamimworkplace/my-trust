@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phase 1 merged to `main` (`dfa90ea`) · Next task: **P2-T06** · Branch: `feature/p2-skeleton`
+> Last updated: 22 Nov 2026 · Phase 1 merged to `main` (`dfa90ea`) · Next task: **P2-T07** · Branch: `feature/p2-skeleton`
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -70,7 +70,7 @@
 | P2 | T03 | MySQL connection | ✅ 22 Nov | `chore: configure MySQL database connection` |
 | P2 | T04 | Templates/static/media config | ✅ 22 Nov (TIME_ZONE Asia/Dhaka) | `chore: configure templates, static and media settings` |
 | P2 | T05 | Create application modules | ✅ 22 Nov | `chore: create application modules` |
-| P2 | T06 | Base layout | ⬜ | |
+| P2 | T06 | Base layout | ✅ 22 Nov (Bootstrap 5.3.9, Icons 1.13.2, SRI) | `feat: add base layout with navbar and footer` |
 | P2 | T07 | Landing page | ⬜ | |
 | P3 | T01 | Custom User model with roles | ⬜ | |
 | P3 | T02 | User admin + superuser | ⬜ | |

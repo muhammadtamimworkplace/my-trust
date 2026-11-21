@@ -1,1 +1,113 @@
-/* My Trust: main stylesheet. Theme tokens and components are added in P2-T06. */
+/* =========================================================================
+   My Trust: main stylesheet
+   Bootstrap 5.3 provides the base; this file defines the brand theme and a
+   few shared components. Colours live in variables so they change in one place.
+   ========================================================================= */
+
+:root {
+  /* Brand palette: dark navy + teal ("cybersecurity" look) */
+  --mt-navy-900: #0b1f33;
+  --mt-navy-800: #12304d;
+  --mt-navy-700: #1b4266;
+  --mt-teal-700: #0f766e;   /* accent; white text on it passes WCAG AA */
+  --mt-teal-800: #115e59;
+  --mt-teal-100: #ccfbf1;
+  --mt-slate-50: #f5f7fa;
+  --mt-slate-500: #64748b;
+
+  /* Trust/status colours (used from P6 onward) */
+  --mt-good: #15803d;
+  --mt-mixed: #b45309;
+  --mt-caution: #b91c1c;
+  --mt-neutral: #475569;
+
+  /* Bootstrap overrides */
+  --bs-body-bg: var(--mt-slate-50);
+  --bs-body-color: #1e293b;
+  --bs-link-color-rgb: 15, 118, 110;
+  --bs-link-hover-color-rgb: 17, 94, 89;
+  --bs-border-radius: 0.5rem;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Bengali", Arial, sans-serif;
+}
+
+/* ---- Accessibility ---- */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 0.5rem;
+  z-index: 1080;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border-radius: var(--bs-border-radius);
+}
+
+:focus-visible {
+  outline: 3px solid var(--mt-teal-700);
+  outline-offset: 2px;
+}
+
+/* ---- Navbar ---- */
+.mt-navbar {
+  background: linear-gradient(90deg, var(--mt-navy-900), var(--mt-navy-800));
+  border-bottom: 3px solid var(--mt-teal-700);
+}
+
+.mt-navbar .navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.mt-navbar .navbar-brand .bi {
+  color: var(--mt-teal-100);
+}
+
+/* ---- Buttons ---- */
+.btn-accent {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--mt-teal-700);
+  --bs-btn-border-color: var(--mt-teal-700);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--mt-teal-800);
+  --bs-btn-hover-border-color: var(--mt-teal-800);
+  --bs-btn-active-bg: var(--mt-teal-800);
+  --bs-btn-active-border-color: var(--mt-teal-800);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: var(--mt-teal-700);
+  --bs-btn-disabled-border-color: var(--mt-teal-700);
+}
+
+/* ---- Cards ---- */
+.mt-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--bs-border-radius);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+/* ---- Footer ---- */
+.mt-footer {
+  background: var(--mt-navy-900);
+  color: #e2e8f0;
+}
+
+.mt-footer-muted {
+  color: #94a3b8;
+}
+
+.mt-footer-link {
+  color: #e2e8f0;
+  text-decoration: none;
+}
+
+.mt-footer-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.mt-footer-link.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}

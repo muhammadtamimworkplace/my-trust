@@ -1,0 +1,22 @@
+{# Site footer. About/Contact pages are added in P10-T02. #}
+<footer class="mt-footer mt-auto py-4">
+  <div class="container">
+    <div class="row gy-3 align-items-center">
+      <div class="col-md-6">
+        <div class="d-flex align-items-center gap-2 fw-semibold">
+          <i class="bi bi-shield-check" aria-hidden="true"></i> My Trust
+        </div>
+        <p class="small mb-0 mt-1 mt-footer-muted">
+          Reports are allegations unless marked <strong>Verified by admin</strong>.
+          Trust scores reflect community feedback and verified reports only.
+        </p>
+      </div>
+      <div class="col-md-6 text-md-end small">
+        <a class="mt-footer-link disabled" aria-disabled="true">About</a> {# placeholder #}
+        <span class="mx-2 mt-footer-muted" aria-hidden="true">·</span>
+        <a class="mt-footer-link disabled" aria-disabled="true">Contact</a> {# placeholder #}
+        <div class="mt-footer-muted mt-1">&copy; {% now "Y" %} My Trust · Undergraduate thesis project</div>
+      </div>
+    </div>
+  </div>
+</footer>

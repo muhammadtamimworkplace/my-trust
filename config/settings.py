@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+from django.contrib.messages import constants as message_constants
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
@@ -176,6 +177,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']   # source files we write (CSS, JS, images)
 STATIC_ROOT = BASE_DIR / 'staticfiles'     # collectstatic output (gitignored)
+
+# Bootstrap uses "danger" where Django uses "error" (templates/partials/_messages.html).
+MESSAGE_TAGS = {message_constants.ERROR: 'danger'}
 
 # Uploaded files (evidence screenshots). Stored outside Git in media/.
 # MEDIA_URL is deliberately NOT routed publicly: evidence is served only through an
