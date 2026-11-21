@@ -10,22 +10,54 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load local settings from .env (never committed). Variables already set in the
+# real environment take precedence over values in the file.
+load_dotenv(BASE_DIR / '.env')
 
-# Quick-start development settings - unsuitable for production
+
+def env_required(name):
+    """Return a required environment variable or stop with a clear error."""
+    value = os.environ.get(name)
+    if not value:
+        raise ImproperlyConfigured(
+            f"Missing required environment variable {name!r}. "
+            "Copy .env.example to .env and fill in the values."
+        )
+    return value
+
+
+def env_bool(name, default=False):
+    """Interpret common true/false spellings, e.g. DEBUG=True."""
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
+def env_list(name, default=''):
+    """Split a comma-separated variable into a list, ignoring blanks."""
+    return [item.strip() for item in os.environ.get(name, default).split(',') if item.strip()]
+
+
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+0^oz%64&kn99e_rs)d_ya7if8lb_cch4hky_9%lms_k__7%$6'
+SECRET_KEY = env_required('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Defaults to False so a missing value never exposes debug pages.
+DEBUG = env_bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', default='127.0.0.1,localhost')
 
 
 # Application definition
