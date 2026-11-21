@@ -27,8 +27,13 @@
           <dt class="small text-secondary">Email <span class="fw-normal">(private)</span></dt>
           <dd class="text-break">{{ user.email }}</dd>
           <dt class="small text-secondary">Member since</dt>
-          <dd class="mb-0">{{ user.date_joined|date:"j F Y" }}</dd>
+          <dd>{{ user.date_joined|date:"j F Y" }}</dd>
         </dl>
+
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'accounts:profile_edit' %}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit profile</a>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'accounts:password_change' %}"><i class="bi bi-key me-1" aria-hidden="true"></i>Change password</a>
+        </div>
       </section>
     </div>
 

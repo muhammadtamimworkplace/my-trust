@@ -9,6 +9,8 @@ app_name = "accounts"
 urlpatterns = [
     path("register/", views.register, name="register"),
     path("profile/", views.profile, name="profile"),
+    path("profile/edit/", views.profile_edit, name="profile_edit"),
+    path("password/change/", views.PasswordChangeView.as_view(), name="password_change"),
     path(
         "login/",
         auth_views.LoginView.as_view(

@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P3-T06** · Branch: `feature/p3-accounts`
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P3-T07** · Branch: `feature/p3-accounts`
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -77,7 +77,7 @@
 | P3 | T03 | Registration | ✅ 22 Nov (12 tests incl. role injection + CSRF) | `feat: add user registration` |
 | P3 | T04 | Login & logout | ✅ 22 Nov (12 tests: session rotation, open-redirect, POST-only logout) | `feat: add login and logout` |
 | P3 | T05 | Profile page | ✅ 22 Nov (5 tests) | `feat: add user profile page` |
-| P3 | T06 | (S) Profile edit & password change | ⬜ | |
+| P3 | T06 | (S) Profile edit & password change | ✅ 22 Nov (10 tests) | `feat: add profile editing and password change` |
 | P3 | T07 | admin_required decorator | ⬜ | |
 | P3 | T08 | Accounts tests | ⬜ | |
 | P4 | T01 | FacebookPage + URL normalization | ⬜ | |

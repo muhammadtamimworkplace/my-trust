@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Edit profile · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="mt-card p-4 p-md-5">
+        <h1 class="h3 fw-bold mb-1">Edit profile</h1>
+        <p class="text-secondary mb-4">Your name and email are private and never shown on public pages.</p>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% include "partials/_form_body.html" %}
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-accent">Save changes</button>
+            <a class="btn btn-outline-secondary" href="{% url 'accounts:profile' %}">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

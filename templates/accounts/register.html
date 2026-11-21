@@ -12,15 +12,7 @@
 
         <form method="post" novalidate>
           {% csrf_token %}
-          {% if form.non_field_errors %}
-            <div class="alert alert-danger" role="alert">
-              {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
-            </div>
-          {% endif %}
-
-          {% for field in form %}
-            {% include "partials/_form_field.html" with field=field %}
-          {% endfor %}
+          {% include "partials/_form_body.html" %}
 
           <button type="submit" class="btn btn-accent w-100 py-2">Create account</button>
         </form>
