@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T01** · Branch: `feature/p3-accounts`
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T02** · Branch: `feature/p4-models` (Phase 3 merged: `5e68a02`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -80,7 +80,7 @@
 | P3 | T06 | (S) Profile edit & password change | ✅ 22 Nov (10 tests) | `feat: add profile editing and password change` |
 | P3 | T07 | admin_required decorator | ✅ 22 Nov (6 tests) | `feat: add admin_required access decorator` |
 | P3 | T08 | Accounts tests | ✅ 22 Nov: covered by tests written in T01–T07 (56 accounts tests); no separate commit | — |
-| P4 | T01 | FacebookPage + URL normalization | ⬜ | |
+| P4 | T01 | FacebookPage + URL normalization | ✅ 22 Nov (9 tests, 20+ URL cases) | `feat: add Facebook page model with URL normalization` |
 | P4 | T02 | ScamReport model | ⬜ | |
 | P4 | T03 | Evidence model + validators | ⬜ | |
 | P4 | T04 | Feedback/Comment/Vote models | ⬜ | |
