@@ -1,11 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.http import Http404
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import never_cache
 
 from .forms import ReportForm
-from .models import ScamReport
+from .models import Evidence, ScamReport
+
+EVIDENCE_CONTENT_TYPES = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png"}
 from .services import reports_by_user, submit_report
 
 REPORTS_PER_PAGE = 10
@@ -50,6 +54,28 @@ def report_detail(request, pk):
         "evidence_list": report.evidence.all() if can_manage else [],
     }
     return render(request, "reports/report_detail.html", context)
+
+
+@never_cache
+@login_required
+def evidence_file(request, pk):
+    """Serve one evidence image to its reporter or an administrator only.
+
+    Evidence is never exposed through a public /media/ URL (it may contain phone
+    numbers or payment details). never_cache stops browsers/proxies keeping copies.
+    """
+    evidence = get_object_or_404(Evidence.objects.select_related("report"), pk=pk)
+    if not evidence.report.is_managed_by(request.user):
+        raise PermissionDenied("You are not allowed to view this evidence.")
+    extension = evidence.file.name.rsplit(".", 1)[-1].lower()
+    try:
+        handle = evidence.file.open("rb")
+    except FileNotFoundError:
+        raise Http404("Evidence file is missing.")
+    response = FileResponse(handle, content_type=EVIDENCE_CONTENT_TYPES.get(extension, "application/octet-stream"))
+    response["Content-Disposition"] = "inline"
+    response["Cache-Control"] = "private, no-store"
+    return response
 
 
 @login_required

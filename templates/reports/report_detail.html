@@ -52,14 +52,22 @@
             </div>
           {% endif %}
 
-          <div class="fw-semibold small mb-1">Evidence ({{ evidence_list|length }})</div>
-          <ul class="list-unstyled mb-0">
+          <div class="fw-semibold small mb-2">Evidence ({{ evidence_list|length }})</div>
+          <div class="row g-3">
             {% for evidence in evidence_list %}
-              <li class="small"><i class="bi bi-image me-1" aria-hidden="true"></i>{{ evidence.original_name }} ({{ evidence.size_bytes|filesizeformat }})</li>
+              {% url 'reports:evidence_file' evidence.pk as evidence_url %}
+              <div class="col-6 col-md-4">
+                <a class="d-block mt-evidence-thumb" href="{{ evidence_url }}" target="_blank" rel="noopener">
+                  <img src="{{ evidence_url }}" alt="Evidence: {{ evidence.original_name }}" loading="lazy" class="img-fluid rounded border">
+                </a>
+                <div class="small text-secondary text-truncate mt-1" title="{{ evidence.original_name }}">
+                  {{ evidence.original_name }} · {{ evidence.size_bytes|filesizeformat }}
+                </div>
+              </div>
             {% empty %}
-              <li class="small text-secondary">No files attached.</li>
+              <div class="col-12 small text-secondary">No files attached.</div>
             {% endfor %}
-          </ul>
+          </div>
         </section>
       {% endif %}
     </article>

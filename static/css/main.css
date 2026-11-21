@@ -134,6 +134,14 @@ body {
   font-size: 1.75rem;
 }
 
+/* ---- Report detail ---- */
+.mt-evidence-thumb img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  width: 100%;
+  background: var(--mt-slate-50);
+}
+
 /* ---- Footer ---- */
 .mt-footer {
   background: var(--mt-navy-900);

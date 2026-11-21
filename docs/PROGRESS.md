@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P5-T05** · Branch: `feature/p5-reporting` (Phases 3–4 merged: `5e68a02`, `06cacfe`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P5-T06** · Branch: `feature/p5-reporting` (Phases 3–4 merged: `5e68a02`, `06cacfe`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -94,7 +94,7 @@
 | P5 | T02 | Submission service + view | ✅ 22 Nov (10 tests; atomic incl. file cleanup) | `feat: implement report submission` |
 | P5 | T03 | My reports history | ✅ 22 Nov (8 tests; constant query count) | `feat: add user report history` |
 | P5 | T04 | Report detail | ✅ 22 Nov (11 tests; rejected = 404 for public; evidence/note private) | `feat: add report detail page` |
-| P5 | T05 | Protected evidence serving | ⬜ | |
+| P5 | T05 | Protected evidence serving | ✅ 22 Nov (7 tests; owner/admin only, no-store, /media/ not served) | `feat: serve evidence through access-controlled view` |
 | P5 | T06 | Add evidence on request | ⬜ | |
 | P5 | T07 | Reporting tests | ⬜ | |
 | P6 | T01 | Score calculation | ⬜ | |
