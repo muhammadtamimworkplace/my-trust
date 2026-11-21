@@ -1,0 +1,36 @@
+# ---- Secrets & local configuration ----
+.env
+.env.*
+!.env.example
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ---- Virtual environments ----
+venv/
+.venv/
+env/
+
+# ---- Django ----
+/media/
+/staticfiles/
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# ---- Database dumps (may contain user data; add deliberately with -f if ever needed) ----
+*.sql
+*.sql.gz
+
+# ---- Editors & OS ----
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+~$*
