@@ -1,0 +1,49 @@
+{# Site navigation. Links marked "placeholder" are connected when their pages exist: #}
+{# Browse (P7-T01), Report (P5-T02), Register (P3-T03), Login/Logout (P3-T04), Profile (P3-T05). #}
+<nav class="navbar navbar-expand-lg navbar-dark mt-navbar" aria-label="Main navigation">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'core:home' %}">
+      <i class="bi bi-shield-check" aria-hidden="true"></i>
+      <span>My Trust</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          {% url 'core:home' as home_url %}
+          <a class="nav-link{% if request.path == home_url %} active{% endif %}"
+             {% if request.path == home_url %}aria-current="page"{% endif %} href="{{ home_url }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" aria-disabled="true">Browse pages</a> {# placeholder #}
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" aria-disabled="true">Report a page</a> {# placeholder #}
+        </li>
+      </ul>
+
+      <ul class="navbar-nav align-items-lg-center gap-lg-2">
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <span class="navbar-text"><i class="bi bi-person-circle me-1" aria-hidden="true"></i>{{ user.get_username }}</span>
+          </li>
+          <li class="nav-item">
+            <button type="button" class="btn btn-outline-light btn-sm" disabled>Log out</button> {# placeholder #}
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true">Log in</a> {# placeholder #}
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-accent btn-sm disabled" aria-disabled="true">Register</a> {# placeholder #}
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
