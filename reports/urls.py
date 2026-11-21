@@ -5,6 +5,8 @@ from . import views
 app_name = "reports"
 
 urlpatterns = [
+    path("pages/", views.page_list, name="page_list"),
+    path("pages/<int:pk>/", views.page_detail, name="page_detail"),
     path("reports/new/", views.report_create, name="report_create"),
     path("reports/mine/", views.my_reports, name="my_reports"),
     path("reports/<int:pk>/", views.report_detail, name="report_detail"),

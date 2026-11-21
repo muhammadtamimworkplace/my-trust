@@ -1,0 +1,11 @@
+{# One public report in a page's verified/unverified list. #}
+<li class="list-group-item px-0 py-3">
+  <div class="d-flex flex-wrap justify-content-between gap-2">
+    <a class="fw-semibold text-decoration-none me-auto" href="{% url 'reports:report_detail' report.pk %}">{{ report.title }}</a>
+    {% include "partials/_status_badge.html" with report=report %}
+  </div>
+  <div class="small text-secondary">
+    {{ report.get_category_display }} · by {{ report.reporter.username }} · {{ report.created_at|date:"j M Y" }}
+  </div>
+  <p class="small mb-0 mt-1">{{ report.description|truncatechars:180 }}</p>
+</li>

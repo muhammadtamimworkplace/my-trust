@@ -1,14 +1,78 @@
 """Business logic for reports (kept out of views so it can be tested directly)."""
 import logging
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Max, Q
 
 from trustscore.services import recalculate_trust
 
 from .models import Evidence, FacebookPage, ScamReport
+from .utils import normalize_facebook_url
 
 logger = logging.getLogger(__name__)
+
+PUBLIC_REPORT = ~Q(reports__status=ScamReport.Status.REJECTED)
+
+
+def search_pages(query="", category="", verification=""):
+    """Pages matching the public search filters, newest reported first.
+
+    - `query`: a Facebook link (any form) is normalized and matched exactly;
+      anything else matches the page name (case-insensitive, partial).
+    - `category`: pages with a *public* (non-rejected) report in that category.
+    - `verification`: "verified" = at least one admin-verified report;
+      "unverified" = public allegations but no verified report.
+    Only pages with public information appear: a page whose only reports were
+    rejected (and that has no visible feedback) is not listed.
+    """
+    pages = FacebookPage.objects.select_related("trust").annotate(
+        public_reports=Count("reports", filter=PUBLIC_REPORT, distinct=True),
+        verified_reports=Count("reports", filter=Q(reports__status=ScamReport.Status.APPROVED), distinct=True),
+        visible_feedback=Count("feedback", filter=Q(feedback__is_hidden=False), distinct=True),
+        last_reported=Max("reports__created_at", filter=PUBLIC_REPORT),
+    ).filter(Q(public_reports__gt=0) | Q(visible_feedback__gt=0))
+
+    query = (query or "").strip()
+    if query:
+        try:
+            pages = pages.filter(url=normalize_facebook_url(query))
+        except ValidationError:
+            pages = pages.filter(name__icontains=query)
+
+    if category:
+        pages = pages.filter(
+            pk__in=ScamReport.objects.filter(category=category).exclude(status=ScamReport.Status.REJECTED)
+            .values("page_id")
+        )
+    if verification == "verified":
+        pages = pages.filter(verified_reports__gt=0)
+    elif verification == "unverified":
+        pages = pages.filter(verified_reports=0, public_reports__gt=0)
+
+    return pages.order_by("-last_reported", "name")
+
+
+SECTION_LIMIT = 20
+
+
+def page_overview(page):
+    """Public content of a page's detail view, in the three separate sections of guide §9.3.
+
+    Rejected reports are never included; hidden feedback is excluded.
+    """
+    public = page.reports.select_related("reporter").exclude(status=ScamReport.Status.REJECTED)
+    verified = public.filter(status=ScamReport.Status.APPROVED)
+    allegations = public.exclude(status=ScamReport.Status.APPROVED)
+    feedback = page.feedback.filter(is_hidden=False).select_related("user").order_by("-created_at")
+    return {
+        "verified_reports": verified[:SECTION_LIMIT],
+        "verified_total": verified.count(),
+        "allegations": allegations[:SECTION_LIMIT],
+        "allegations_total": allegations.count(),
+        "feedback": feedback[:SECTION_LIMIT],
+        "feedback_total": feedback.count(),
+    }
 
 
 def reports_by_user(user):

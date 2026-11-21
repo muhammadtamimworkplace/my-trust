@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.name }} · My Trust{% endblock %}
+{% block meta_description %}Community reports and trust score for the Facebook page {{ page.name }} on My Trust.{% endblock %}
+
+{% block content %}
+<div class="container">
+  <nav aria-label="Breadcrumb" class="small mb-2">
+    <a href="{% url 'reports:page_list' %}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>All reported pages</a>
+  </nav>
+
+  <div class="row g-4">
+    <aside class="col-lg-4 order-lg-2" aria-labelledby="page-heading">
+      <div class="mt-card p-4 mb-4">
+        <h1 id="page-heading" class="h4 fw-bold mb-1 text-break">{{ page.name }}</h1>
+        <a class="small text-break" href="{{ page.url }}" target="_blank" rel="noopener noreferrer nofollow">
+          {{ page.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+        </a>
+        <hr>
+        {% include "partials/_trust_badge.html" with trust=page.trust %}
+        <a class="btn btn-accent w-100 mt-4" href="{% url 'reports:report_create' %}?page={{ page.pk }}">
+          <i class="bi bi-flag me-1" aria-hidden="true"></i>Report this page
+        </a>
+      </div>
+    </aside>
+
+    <div class="col-lg-8 order-lg-1">
+      <section class="mt-card p-4 mb-4" aria-labelledby="verified-heading">
+        <h2 id="verified-heading" class="h5 fw-bold mb-1">
+          <i class="bi bi-patch-check text-success me-1" aria-hidden="true"></i>Verified reports ({{ verified_total }})
+        </h2>
+        <p class="small text-secondary mb-0">Reviewed and confirmed by an administrator.</p>
+        {% if verified_reports %}
+          <ul class="list-group list-group-flush">
+            {% for report in verified_reports %}{% include "reports/_public_report_item.html" %}{% endfor %}
+          </ul>
+        {% else %}
+          <p class="small mt-3 mb-0">No verified reports.</p>
+        {% endif %}
+      </section>
+
+      <section class="mt-card p-4 mb-4" aria-labelledby="allegations-heading">
+        <h2 id="allegations-heading" class="h5 fw-bold mb-1">
+          <i class="bi bi-hourglass-split text-warning me-1" aria-hidden="true"></i>Unverified allegations ({{ allegations_total }})
+        </h2>
+        <p class="small text-secondary mb-0">
+          Submitted by users and <strong>not yet confirmed</strong>. They do not affect the trust score.
+        </p>
+        {% if allegations %}
+          <ul class="list-group list-group-flush">
+            {% for report in allegations %}{% include "reports/_public_report_item.html" %}{% endfor %}
+          </ul>
+        {% else %}
+          <p class="small mt-3 mb-0">No unverified allegations.</p>
+        {% endif %}
+      </section>
+
+      <section class="mt-card p-4" aria-labelledby="feedback-heading">
+        <h2 id="feedback-heading" class="h5 fw-bold mb-1">
+          <i class="bi bi-people me-1" aria-hidden="true"></i>Community feedback ({{ feedback_total }})
+        </h2>
+        <p class="small text-secondary mb-0">Opinions from registered users, shown separately from verified findings.</p>
+        {% if feedback %}
+          <ul class="list-group list-group-flush">
+            {% for item in feedback %}
+              <li class="list-group-item px-0 py-3">
+                <div class="d-flex justify-content-between gap-2">
+                  <span class="fw-semibold">{{ item.user.username }}</span>
+                  {% if item.sentiment == "POSITIVE" %}
+                    <span class="badge text-bg-success"><span aria-hidden="true">👍</span> Positive</span>
+                  {% else %}
+                    <span class="badge text-bg-danger"><span aria-hidden="true">👎</span> Negative</span>
+                  {% endif %}
+                </div>
+                {% if item.comment %}<p class="small mb-0 mt-1">{{ item.comment }}</p>{% endif %}
+                <div class="small text-secondary">{{ item.created_at|date:"j M Y" }}</div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="small mt-3 mb-0">No feedback yet.</p>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}
