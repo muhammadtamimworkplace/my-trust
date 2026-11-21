@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Report a page · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="mt-card p-4 p-md-5">
+        <h1 class="h3 fw-bold mb-1">Report a Facebook page</h1>
+        <p class="text-secondary mb-4">
+          Tell us what happened. Your report stays <strong>under review</strong> until an administrator checks the evidence.
+        </p>
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+          {% include "partials/_form_body.html" %}
+          <button type="submit" class="btn btn-accent px-4 py-2">
+            <i class="bi bi-send me-1" aria-hidden="true"></i>Submit report
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <aside class="col-lg-4" aria-labelledby="guidelines-heading">
+      <div class="mt-card p-4">
+        <h2 id="guidelines-heading" class="h6 fw-bold mb-3"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Before you submit</h2>
+        <ul class="small text-secondary ps-3 mb-0">
+          <li class="mb-2">Describe facts: what you ordered, what you paid, how, and what happened.</li>
+          <li class="mb-2">Payment receipts and chat screenshots are the strongest evidence.</li>
+          <li class="mb-2">Cover or crop other people's phone numbers and personal details in screenshots.</li>
+          <li class="mb-2">Your screenshots are visible only to you and administrators.</li>
+          <li>Other users see your report as an <strong>unverified allegation</strong> until an admin verifies it.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+{% endblock %}

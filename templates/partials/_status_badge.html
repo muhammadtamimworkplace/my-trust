@@ -1,0 +1,10 @@
+{# Report status badge. Usage: {% include "partials/_status_badge.html" with report=report %} #}
+{% if report.status == "APPROVED" %}
+  <span class="badge text-bg-success"><i class="bi bi-patch-check me-1" aria-hidden="true"></i>{{ report.get_status_display }}</span>
+{% elif report.status == "PENDING" %}
+  <span class="badge text-bg-warning"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>{{ report.get_status_display }}</span>
+{% elif report.status == "NEEDS_EVIDENCE" %}
+  <span class="badge text-bg-info"><i class="bi bi-paperclip me-1" aria-hidden="true"></i>{{ report.get_status_display }}</span>
+{% else %}
+  <span class="badge text-bg-secondary"><i class="bi bi-x-circle me-1" aria-hidden="true"></i>{{ report.get_status_display }}</span>
+{% endif %}

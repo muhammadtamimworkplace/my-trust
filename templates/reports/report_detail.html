@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{{ report.title }} · My Trust{% endblock %}
+{% block meta_description %}Report about {{ report.page.name }} on My Trust ({{ report.get_status_display }}).{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row g-4">
+    <article class="col-lg-8" aria-labelledby="report-title">
+      {% if report.is_verified %}
+        <div class="alert alert-success d-flex gap-2" role="note">
+          <i class="bi bi-patch-check-fill" aria-hidden="true"></i>
+          <div><strong>Verified by admin.</strong> An administrator reviewed the evidence and confirmed this report.</div>
+        </div>
+      {% elif report.status == "REJECTED" %}
+        <div class="alert alert-secondary d-flex gap-2" role="note">
+          <i class="bi bi-eye-slash" aria-hidden="true"></i>
+          <div><strong>Rejected.</strong> This report is not shown publicly. Only you and administrators can see it.</div>
+        </div>
+      {% else %}
+        <div class="alert alert-warning d-flex gap-2" role="note">
+          <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+          <div><strong>Unverified allegation.</strong> Submitted by a user and not yet confirmed by an administrator.
+            It does not affect the page's trust score.</div>
+        </div>
+      {% endif %}
+
+      <div class="mt-card p-4">
+        <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+          <span class="badge rounded-pill text-bg-light border">{{ report.get_category_display }}</span>
+          {% include "partials/_status_badge.html" with report=report %}
+        </div>
+        <h1 id="report-title" class="h3 fw-bold">{{ report.title }}</h1>
+        <p class="small text-secondary mb-4">
+          Reported by <span class="fw-semibold">{{ report.reporter.username }}</span>
+          on {{ report.created_at|date:"j F Y" }}
+          {% if report.incident_date %}· incident on {{ report.incident_date|date:"j F Y" }}{% endif %}
+          {% if report.amount_lost is not None %}· amount lost: BDT {{ report.amount_lost }}{% endif %}
+        </p>
+        <div class="mt-report-text">{{ report.description|linebreaks }}</div>
+      </div>
+
+      {% if can_manage %}
+        <section class="mt-card p-4 mt-4" aria-labelledby="private-heading">
+          <h2 id="private-heading" class="h5 fw-bold mb-1"><i class="bi bi-lock me-1" aria-hidden="true"></i>Private to you and administrators</h2>
+          <p class="small text-secondary">Other visitors cannot see this section.</p>
+
+          {% if report.status == "NEEDS_EVIDENCE" and report.reporter_id == user.pk %}
+            <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2" role="note">
+              <span><strong>More evidence requested.</strong> Add screenshots to send this report back for review.</span>
+              <a class="btn btn-sm btn-accent" href="{% url 'reports:evidence_add' report.pk %}"><i class="bi bi-upload me-1" aria-hidden="true"></i>Add evidence</a>
+            </div>
+          {% endif %}
+
+          {% if report.admin_note %}
+            <div class="mb-3">
+              <div class="fw-semibold small">Admin note{% if report.reviewed_at %} ({{ report.reviewed_at|date:"j M Y" }}){% endif %}</div>
+              <div>{{ report.admin_note|linebreaksbr }}</div>
+            </div>
+          {% endif %}
+
+          <div class="fw-semibold small mb-2">Evidence ({{ evidence_list|length }})</div>
+          <div class="row g-3">
+            {% for evidence in evidence_list %}
+              {% url 'reports:evidence_file' evidence.pk as evidence_url %}
+              <div class="col-6 col-md-4">
+                <a class="d-block mt-evidence-thumb" href="{{ evidence_url }}" target="_blank" rel="noopener">
+                  <img src="{{ evidence_url }}" alt="Evidence: {{ evidence.original_name }}" loading="lazy" class="img-fluid rounded border">
+                </a>
+                <div class="small text-secondary text-truncate mt-1" title="{{ evidence.original_name }}">
+                  {{ evidence.original_name }} · {{ evidence.size_bytes|filesizeformat }}
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12 small text-secondary">No files attached.</div>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+    </article>
+
+    <aside class="col-lg-4" aria-labelledby="page-heading">
+      <div class="mt-card p-4">
+        <h2 id="page-heading" class="h6 fw-bold text-secondary text-uppercase small mb-2">Reported page</h2>
+        <div class="fw-semibold mb-1">{{ report.page.name }}</div>
+        <a class="small text-break" href="{{ report.page.url }}" target="_blank" rel="noopener noreferrer nofollow">
+          {{ report.page.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+        </a>
+        <p class="small text-secondary mt-3 mb-0">Opens Facebook in a new tab. Be careful before paying any seller in advance.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+{% endblock %}

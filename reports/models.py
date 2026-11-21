@@ -109,6 +109,19 @@ class ScamReport(models.Model):
     def is_verified(self):
         return self.status == self.Status.APPROVED
 
+    @property
+    def is_public(self):
+        """Rejected reports are hidden from the public; all others are shown
+        (unverified ones clearly labelled as allegations)."""
+        return self.status != self.Status.REJECTED
+
+    def is_managed_by(self, user):
+        """The reporter and platform admins may see private details (evidence, admin note)."""
+        return user.is_authenticated and (user.pk == self.reporter_id or user.is_platform_admin)
+
+    def is_visible_to(self, user):
+        return self.is_public or self.is_managed_by(user)
+
 
 def evidence_upload_path(instance, filename):
     """Store evidence as evidence/<year>/<month>/<random uuid>.<ext>.

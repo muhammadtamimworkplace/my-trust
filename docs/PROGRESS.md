@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P5-T01** · Branch: `feature/p4-models` (Phase 3 merged: `5e68a02`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P6-T01** · Branch: `feature/p5-reporting` (Phases 3–4 merged: `5e68a02`, `06cacfe`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -90,13 +90,13 @@
 | P4 | T07 | Register models in admin | ✅ 22 Nov (5 tests; trust + audit log read-only) | `feat: register domain models in admin` |
 | P4 | T08 | Demo seed command | ✅ 22 Nov (6 tests; seeded mytrust_db: 6 users, 8 pages, 15 reports) | `feat: add demo data seeding command` |
 | P4 | T09 | Model constraint tests | ✅ 22 Nov: covered by tests written in T01–T08; no separate commit | — |
-| P5 | T01 | Report form | ⬜ | |
-| P5 | T02 | Submission service + view | ⬜ | |
-| P5 | T03 | My reports history | ⬜ | |
-| P5 | T04 | Report detail | ⬜ | |
-| P5 | T05 | Protected evidence serving | ⬜ | |
-| P5 | T06 | Add evidence on request | ⬜ | |
-| P5 | T07 | Reporting tests | ⬜ | |
+| P5 | T01 | Report form | ✅ 22 Nov (9 tests; multi-file upload, 1–5 files) | `feat: add scam report form with validation` |
+| P5 | T02 | Submission service + view | ✅ 22 Nov (10 tests; atomic incl. file cleanup) | `feat: implement report submission` |
+| P5 | T03 | My reports history | ✅ 22 Nov (8 tests; constant query count) | `feat: add user report history` |
+| P5 | T04 | Report detail | ✅ 22 Nov (11 tests; rejected = 404 for public; evidence/note private) | `feat: add report detail page` |
+| P5 | T05 | Protected evidence serving | ✅ 22 Nov (7 tests; owner/admin only, no-store, /media/ not served) | `feat: serve evidence through access-controlled view` |
+| P5 | T06 | Add evidence on request | ✅ 22 Nov (9 tests; reporter only, back to review) | `feat: allow adding evidence when requested` |
+| P5 | T07 | Reporting tests | ✅ 22 Nov: covered by tests written in T01–T06; no separate commit | — |
 | P6 | T01 | Score calculation | ⬜ | |
 | P6 | T02 | Persist & recalculate | ⬜ | |
 | P6 | T03 | Trust badge component | ⬜ | |

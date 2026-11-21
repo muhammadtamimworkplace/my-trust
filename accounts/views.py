@@ -6,7 +6,11 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 
+from reports.services import reports_by_user
+
 from .forms import ProfileForm, RegistrationForm, StyledPasswordChangeForm
+
+RECENT_REPORTS_ON_PROFILE = 5
 
 
 def register(request):
@@ -29,8 +33,13 @@ def register(request):
 
 @login_required
 def profile(request):
-    """The logged-in user's own account page. Report history is added in P5-T03."""
-    return render(request, "accounts/profile.html")
+    """The logged-in user's own account page with their most recent reports."""
+    reports = reports_by_user(request.user)
+    context = {
+        "recent_reports": reports[:RECENT_REPORTS_ON_PROFILE],
+        "report_count": reports.count(),
+    }
+    return render(request, "accounts/profile.html", context)
 
 
 @login_required
