@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T07** · Branch: `feature/p4-models` (Phase 3 merged: `5e68a02`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T08** · Branch: `feature/p4-models` (Phase 3 merged: `5e68a02`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -47,6 +47,7 @@
 * New 10.11 default: the `PUBLIC` role has access to databases named `test` / `test_*`, so every account (incl. `mytrust_user`) can see the empty `test` DB. This is the stock MariaDB setup and doesn't affect the 6 project DBs or `mytrust_db`. Left as is unless you want it revoked.
 * ✅ 22 Nov: manual checks passed (reported by you): XAMPP Control Panel Stop/Start, phpMyAdmin, and the existing apps on 10.11.
 * `C:\xampp\mysql_10.4_backup\resetroot.bat` is 10.4-only. Do not use it on 10.11.
+* MariaDB time-zone tables are empty (`CONVERT_TZ()` returns NULL), so Django features that convert dates inside the DB fail (admin `date_hierarchy`, `TruncDate`/`TruncMonth` with USE_TZ). **Rule:** group dates in Python. Loading the tables would change the shared server, so ask first.
 
 ## Open questions
 
@@ -86,7 +87,7 @@
 | P4 | T04 | Feedback/Comment/Vote models | ✅ 22 Nov (8 tests; 2 UNIQUE + 1 CHECK in DB) | `feat: add feedback, comment and vote models` |
 | P4 | T05 | TrustEvaluation model | ✅ 22 Nov (5 tests) | `feat: add trust evaluation model` |
 | P4 | T06 | AdminAction model | ✅ 22 Nov (5 tests) | `feat: add admin action audit log model` |
-| P4 | T07 | Register models in admin | ⬜ | |
+| P4 | T07 | Register models in admin | ✅ 22 Nov (5 tests; trust + audit log read-only) | `feat: register domain models in admin` |
 | P4 | T08 | Demo seed command | ⬜ | |
 | P4 | T09 | Model constraint tests | ⬜ | |
 | P5 | T01 | Report form | ⬜ | |
