@@ -92,6 +92,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+# Custom user model (accounts/models.py). Must be set before the first migration.
+AUTH_USER_MODEL = 'accounts.User'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
