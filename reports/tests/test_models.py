@@ -1,14 +1,20 @@
+import io
+import shutil
+import tempfile
 from datetime import timedelta
 from decimal import Decimal
+from pathlib import Path, PurePath
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import IntegrityError, transaction
 from django.db.models import ProtectedError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
+from PIL import Image
 
-from reports.models import FacebookPage, ScamReport
+from reports.models import Evidence, FacebookPage, ScamReport, evidence_upload_path
 
 User = get_user_model()
 
@@ -110,3 +116,57 @@ class ScamReportModelTests(TestCase):
         second = self.make_report(title="Second report about this page")
         second.save()
         self.assertEqual(list(ScamReport.objects.all()), [second, first])
+
+
+TEMP_MEDIA = tempfile.mkdtemp(prefix="mytrust-test-media-")
+
+
+@override_settings(MEDIA_ROOT=TEMP_MEDIA)
+class EvidenceModelTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create_user("reporter", "reporter@example.com", "x")
+        page = FacebookPage.objects.create(name="Example Shop", url="facebook.com/example.shop")
+        cls.report = ScamReport.objects.create(
+            page=page, reporter=user, category=ScamReport.Category.FAKE_PRODUCT,
+            title="Received a fake copy", description="The product shown was original but a copy arrived.",
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA, ignore_errors=True)
+
+    def png_upload(self, name="My Screenshot.PNG"):
+        buffer = io.BytesIO()
+        Image.new("RGB", (10, 10)).save(buffer, format="PNG")
+        return SimpleUploadedFile(name, buffer.getvalue(), content_type="image/png")
+
+    def test_saved_file_gets_random_name_and_keeps_original_for_display(self):
+        evidence = Evidence.objects.create(report=self.report, file=self.png_upload())
+        stored = PurePath(evidence.file.name)
+        today = timezone.localdate()
+        self.assertEqual(stored.parent.as_posix(), f"evidence/{today:%Y}/{today:%m}")
+        self.assertRegex(stored.name, r"^[0-9a-f]{32}\.png$")
+        self.assertEqual(evidence.original_name, "My Screenshot.PNG")
+        self.assertGreater(evidence.size_bytes, 0)
+        self.assertTrue(Path(TEMP_MEDIA, evidence.file.name).exists())
+
+    def test_two_uploads_with_the_same_name_do_not_collide(self):
+        first = Evidence.objects.create(report=self.report, file=self.png_upload("same.png"))
+        second = Evidence.objects.create(report=self.report, file=self.png_upload("same.png"))
+        self.assertNotEqual(first.file.name, second.file.name)
+
+    def test_jpeg_extension_is_normalised_to_jpg(self):
+        self.assertTrue(evidence_upload_path(None, "photo.JPEG").endswith(".jpg"))
+
+    def test_model_validation_rejects_fake_image(self):
+        evidence = Evidence(report=self.report, file=SimpleUploadedFile("evil.png", b"not an image"))
+        with self.assertRaises(ValidationError) as ctx:
+            evidence.full_clean()
+        self.assertIn("file", ctx.exception.message_dict)
+
+    def test_evidence_is_deleted_with_its_report(self):
+        Evidence.objects.create(report=self.report, file=self.png_upload())
+        self.report.delete()
+        self.assertEqual(Evidence.objects.count(), 0)

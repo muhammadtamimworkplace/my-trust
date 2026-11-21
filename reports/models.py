@@ -1,8 +1,13 @@
+import uuid
+from pathlib import PurePath
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator, MinLengthValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
+
+from core.validators import EVIDENCE_VALIDATORS
 
 from .utils import normalize_facebook_url
 
@@ -103,3 +108,45 @@ class ScamReport(models.Model):
     @property
     def is_verified(self):
         return self.status == self.Status.APPROVED
+
+
+def evidence_upload_path(instance, filename):
+    """Store evidence as evidence/<year>/<month>/<random uuid>.<ext>.
+
+    The user's filename is never used on disk (it is kept in original_name for
+    display only), so names cannot be guessed or used to overwrite other files.
+    """
+    extension = PurePath(filename).suffix.lower().lstrip(".")
+    if extension == "jpeg":
+        extension = "jpg"
+    today = timezone.localdate()
+    return f"evidence/{today:%Y}/{today:%m}/{uuid.uuid4().hex}.{extension}"
+
+
+class Evidence(models.Model):
+    """A screenshot supporting a scam report.
+
+    Evidence can contain personal data (phone numbers, payment IDs), so it is
+    never served publicly: only the reporter and administrators may view it
+    (access-controlled view in P5-T05).
+    """
+
+    report = models.ForeignKey(ScamReport, on_delete=models.CASCADE, related_name="evidence")
+    file = models.ImageField(upload_to=evidence_upload_path, validators=EVIDENCE_VALIDATORS)
+    original_name = models.CharField(max_length=255, blank=True)
+    size_bytes = models.PositiveIntegerField(default=0)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["uploaded_at"]
+        verbose_name = "evidence file"
+        verbose_name_plural = "evidence files"
+
+    def __str__(self):
+        return self.original_name or self.file.name
+
+    def save(self, *args, **kwargs):
+        if self.file and not self.pk:
+            self.original_name = (self.original_name or PurePath(self.file.name).name)[:255]
+            self.size_bytes = self.file.size
+        super().save(*args, **kwargs)
