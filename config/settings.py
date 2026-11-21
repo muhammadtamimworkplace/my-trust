@@ -195,6 +195,10 @@ MESSAGE_TAGS = {message_constants.ERROR: 'danger'}
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Evidence upload limits (core/validators.py, reports forms).
+EVIDENCE_MAX_BYTES = 5 * 1024 * 1024   # 5 MB per file
+EVIDENCE_MAX_FILES = 5                 # per report
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
