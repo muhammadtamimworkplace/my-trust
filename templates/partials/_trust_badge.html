@@ -1,0 +1,50 @@
+{% comment %}
+Trust score badge (guide §9.3).
+Usage: {% include "partials/_trust_badge.html" with trust=page.trust %}
+       {% include "partials/_trust_badge.html" with trust=page.trust compact=True %}  (for lists)
+`trust` may be empty (page never evaluated) -> shown as "Not yet rated".
+With "Not enough data" no number is shown: a neutral 50 would look like a real rating.
+{% endcomment %}
+{% if trust %}
+  {% with label=trust.label|lower %}
+    {% if compact %}
+      <span class="mt-trust-pill mt-trust--{{ label }}" title="Trust score: {{ trust.get_label_display }}">
+        {% if trust.label != "INSUFFICIENT" %}<strong>{{ trust.score }}</strong> · {% endif %}{{ trust.get_label_display }}
+      </span>
+    {% else %}
+      <section class="mt-trust mt-trust--{{ label }}" aria-label="Trust score">
+        <div class="d-flex align-items-center gap-3">
+          <div class="mt-trust-score" role="img"
+               aria-label="{% if trust.label == 'INSUFFICIENT' %}No score yet{% else %}Trust score {{ trust.score }} out of 100{% endif %}">
+            {% if trust.label == "INSUFFICIENT" %}–{% else %}{{ trust.score }}{% endif %}
+          </div>
+          <div>
+            <div class="small text-secondary text-uppercase fw-semibold">Trust score</div>
+            <div class="mt-trust-label">{{ trust.get_label_display }}</div>
+          </div>
+        </div>
+
+        <ul class="list-unstyled small mt-3 mb-2">
+          <li class="d-flex justify-content-between">
+            <span><i class="bi bi-patch-check me-1" aria-hidden="true"></i>Verified reports</span>
+            <strong>{{ trust.verified_report_count }}</strong>
+          </li>
+          <li class="d-flex justify-content-between">
+            <span><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Unverified allegations</span>
+            <strong>{{ trust.pending_report_count }}</strong>
+          </li>
+          <li class="d-flex justify-content-between">
+            <span><i class="bi bi-people me-1" aria-hidden="true"></i>Community feedback</span>
+            <strong><span aria-label="{{ trust.positive_count }} positive">👍 {{ trust.positive_count }}</span>
+              <span class="ms-2" aria-label="{{ trust.negative_count }} negative">👎 {{ trust.negative_count }}</span></strong>
+          </li>
+        </ul>
+        <p class="mt-trust-disclaimer mb-0">
+          Scores reflect community feedback and admin-verified reports only. Unverified reports are allegations.
+        </p>
+      </section>
+    {% endif %}
+  {% endwith %}
+{% else %}
+  <span class="mt-trust-pill mt-trust--insufficient">Not yet rated</span>
+{% endif %}

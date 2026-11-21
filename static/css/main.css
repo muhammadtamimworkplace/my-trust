@@ -134,6 +134,52 @@ body {
   font-size: 1.75rem;
 }
 
+/* ---- Trust badge (templates/partials/_trust_badge.html) ---- */
+.mt-trust--good         { --mt-trust-color: var(--mt-good); }
+.mt-trust--mixed        { --mt-trust-color: var(--mt-mixed); }
+.mt-trust--caution      { --mt-trust-color: var(--mt-caution); }
+.mt-trust--insufficient { --mt-trust-color: var(--mt-neutral); }
+
+.mt-trust {
+  border-left: 4px solid var(--mt-trust-color);
+  padding-left: 1rem;
+}
+
+.mt-trust-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 4px solid var(--mt-trust-color);
+  color: var(--mt-trust-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.mt-trust-label {
+  color: var(--mt-trust-color);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.mt-trust-disclaimer {
+  font-size: 0.75rem;
+  color: var(--mt-slate-500);
+}
+
+.mt-trust-pill {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--mt-trust-color);
+  color: var(--mt-trust-color);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
 /* ---- Report detail ---- */
 .mt-evidence-thumb img {
   aspect-ratio: 4 / 3;
