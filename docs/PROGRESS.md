@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phase 1 complete · Next task: **P2-T01** · Branch: `feature/p1-setup` (merge to `main` pending)
+> Last updated: 22 Nov 2026 · Phase 1 merged to `main` (`dfa90ea`) · Next task: **P2-T02** · Branch: `feature/p2-skeleton`
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -45,8 +45,7 @@
 
 **Known differences / follow-ups**
 * New 10.11 default: the `PUBLIC` role has access to databases named `test` / `test_*`, so every account (incl. `mytrust_user`) can see the empty `test` DB. This is the stock MariaDB setup and doesn't affect the 6 project DBs or `mytrust_db`. Left as is unless you want it revoked.
-* Smoke-test your other apps (kbeauty, ogcarecraft, aura_studio) once on 10.11.
-* Not yet done by hand: Stop/Start through the **XAMPP Control Panel buttons** (tested with equivalent commands only).
+* ✅ 22 Nov: manual checks passed (reported by you): XAMPP Control Panel Stop/Start, phpMyAdmin, and the existing apps on 10.11.
 * `C:\xampp\mysql_10.4_backup\resetroot.bat` is 10.4-only. Do not use it on 10.11.
 
 ## Open questions
@@ -66,7 +65,7 @@
 | P1 | T03 | Add .gitignore | ✅ 22 Nov | `chore: add gitignore for Python and Django` |
 | P1 | T04 | Create MySQL database and user | ✅ 22 Nov (done early, with the upgrade) | — (no repo files) |
 | P1 | T05 | Virtual env + pinned dependencies | ✅ 22 Nov | `chore: add pinned project dependencies` |
-| P2 | T01 | Initialize Django project | ⬜ | |
+| P2 | T01 | Initialize Django project | ✅ 22 Nov | `chore: initialize Django project` |
 | P2 | T02 | Settings from environment | ⬜ | |
 | P2 | T03 | MySQL connection | ⬜ | |
 | P2 | T04 | Templates/static/media config | ⬜ | |
