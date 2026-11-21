@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P3-T04** · Branch: `feature/p3-accounts`
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P3-T05** · Branch: `feature/p3-accounts`
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -75,7 +75,7 @@
 | P3 | T01 | Custom User model with roles | ✅ 22 Nov (first migrate; 7 model tests) | `feat: add custom user model with roles` |
 | P3 | T02 | User admin + superuser | ✅ code 22 Nov (4 admin tests) · ⬜ superuser: you run `createsuperuser` | `feat: register user model in admin` |
 | P3 | T03 | Registration | ✅ 22 Nov (12 tests incl. role injection + CSRF) | `feat: add user registration` |
-| P3 | T04 | Login & logout | ⬜ | |
+| P3 | T04 | Login & logout | ✅ 22 Nov (12 tests: session rotation, open-redirect, POST-only logout) | `feat: add login and logout` |
 | P3 | T05 | Profile page | ⬜ | |
 | P3 | T06 | (S) Profile edit & password change | ⬜ | |
 | P3 | T07 | admin_required decorator | ⬜ | |

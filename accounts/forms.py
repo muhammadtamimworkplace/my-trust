@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 
 from core.forms import BootstrapFormMixin
@@ -26,3 +26,8 @@ class RegistrationForm(BootstrapFormMixin, UserCreationForm):
         if User.objects.filter(email__iexact=email).exists():
             raise ValidationError("An account with this email address already exists.", code="duplicate_email")
         return email
+
+
+class LoginForm(BootstrapFormMixin, AuthenticationForm):
+    """Django's login form with Bootstrap styling."""
+

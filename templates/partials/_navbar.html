@@ -1,5 +1,5 @@
 {# Site navigation. Links marked "placeholder" are connected when their pages exist: #}
-{# Browse (P7-T01), Report (P5-T02), Login/Logout (P3-T04), Profile (P3-T05). #}
+{# Browse (P7-T01), Report (P5-T02), Profile (P3-T05). #}
 <nav class="navbar navbar-expand-lg navbar-dark mt-navbar" aria-label="Main navigation">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'core:home' %}">
@@ -33,11 +33,14 @@
             <span class="navbar-text"><i class="bi bi-person-circle me-1" aria-hidden="true"></i>{{ user.get_username }}</span>
           </li>
           <li class="nav-item">
-            <button type="button" class="btn btn-outline-light btn-sm" disabled>Log out</button> {# placeholder #}
+            <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-light btn-sm">Log out</button>
+            </form>
           </li>
         {% else %}
           <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true">Log in</a> {# placeholder #}
+            <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a>
           </li>
           <li class="nav-item">
             <a class="btn btn-accent btn-sm" href="{% url 'accounts:register' %}">Register</a>
