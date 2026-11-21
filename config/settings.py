@@ -86,7 +86,8 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # Project-wide templates (base layout, partials); apps may also have their own.
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -153,7 +154,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Times are stored in UTC (USE_TZ) and displayed in local time.
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
@@ -164,6 +166,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']   # source files we write (CSS, JS, images)
+STATIC_ROOT = BASE_DIR / 'staticfiles'     # collectstatic output (gitignored)
+
+# Uploaded files (evidence screenshots). Stored outside Git in media/.
+# MEDIA_URL is deliberately NOT routed publicly: evidence is served only through an
+# access-controlled view (guide §12.2, task P5-T05).
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
