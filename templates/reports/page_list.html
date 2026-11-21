@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Browse reported pages · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="h3 fw-bold mb-3">Browse reported pages</h1>
+
+  <form method="get" class="mt-card p-3 mb-4" role="search" aria-label="Search pages">
+    <div class="row g-2 align-items-end">
+      <div class="col-lg-5">
+        <label class="form-label small fw-semibold" for="{{ form.q.id_for_label }}">{{ form.q.label }}</label>
+        {{ form.q }}
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <label class="form-label small fw-semibold" for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+        {{ form.category }}
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <label class="form-label small fw-semibold" for="{{ form.status.id_for_label }}">{{ form.status.label }}</label>
+        {{ form.status }}
+      </div>
+      <div class="col-lg-1 d-grid">
+        <button class="btn btn-accent" type="submit"><i class="bi bi-search" aria-hidden="true"></i><span class="d-lg-none ms-1">Search</span></button>
+      </div>
+    </div>
+    {% if is_filtered %}
+      <a class="small d-inline-block mt-2" href="{% url 'reports:page_list' %}">Clear filters</a>
+    {% endif %}
+  </form>
+
+  <p class="small text-secondary" aria-live="polite">
+    {{ page_obj.paginator.count }} page{{ page_obj.paginator.count|pluralize }} found{% if is_filtered %} for your filters{% endif %}.
+  </p>
+
+  {% if page_obj.object_list %}
+    <div class="row g-3">
+      {% for page in page_obj.object_list %}
+        <div class="col-md-6 col-xl-4">
+          <article class="mt-card h-100 p-3 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <h2 class="h6 fw-bold mb-1 text-break">{{ page.name }}</h2>
+              {% include "partials/_trust_badge.html" with trust=page.trust compact=True %}
+            </div>
+            <div class="small text-secondary text-break mb-3">{{ page.url|cut:"https://www." }}</div>
+            <div class="small mt-auto d-flex flex-wrap gap-3">
+              <span><i class="bi bi-patch-check me-1" aria-hidden="true"></i>{{ page.verified_reports }} verified</span>
+              <span><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>{{ page.trust.pending_report_count|default:0 }} unverified</span>
+              <span><i class="bi bi-people me-1" aria-hidden="true"></i>{{ page.visible_feedback }} feedback</span>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+    {% include "partials/_pagination.html" %}
+  {% else %}
+    <div class="mt-card p-4 text-center">
+      <p class="mb-2">No reported pages match your search.</p>
+      <p class="small text-secondary mb-3">No reports doesn't mean a page is safe. Always be careful with advance payments.</p>
+      <a class="btn btn-sm btn-accent" href="{% url 'reports:report_create' %}">Report a page</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,5 +1,4 @@
-{# Site navigation. Links marked "placeholder" are connected when their pages exist: #}
-{# Browse (P7-T01). #}
+{# Site navigation. #}
 <nav class="navbar navbar-expand-lg navbar-dark mt-navbar" aria-label="Main navigation">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'core:home' %}">
@@ -20,7 +19,9 @@
              {% if request.path == home_url %}aria-current="page"{% endif %} href="{{ home_url }}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Browse pages</a> {# placeholder #}
+          {% url 'reports:page_list' as pages_url %}
+          <a class="nav-link{% if request.path == pages_url %} active{% endif %}"
+             {% if request.path == pages_url %}aria-current="page"{% endif %} href="{{ pages_url }}">Browse pages</a>
         </li>
         <li class="nav-item">
           {% url 'reports:report_create' as report_url %}

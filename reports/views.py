@@ -7,14 +7,33 @@ from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import never_cache
 
-from .forms import AddEvidenceForm, ReportForm
+from .forms import AddEvidenceForm, PageSearchForm, ReportForm
 from .models import Evidence, ScamReport
-from .services import add_requested_evidence, reports_by_user, submit_report
+from .services import add_requested_evidence, reports_by_user, search_pages, submit_report
 
 EVIDENCE_CONTENT_TYPES = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png"}
 REPORTS_PER_PAGE = 10
+PAGES_PER_PAGE = 12
 
 REPORT_FIELDS = ("category", "title", "description", "incident_date", "amount_lost")
+
+
+def page_list(request):
+    """Public search over reported Facebook pages (name or link, category, verification)."""
+    form = PageSearchForm(request.GET or None)
+    filters = form.cleaned_data if form.is_valid() else {}
+    pages = search_pages(filters.get("q", ""), filters.get("category", ""), filters.get("status", ""))
+    page_obj = Paginator(pages, PAGES_PER_PAGE).get_page(request.GET.get("page"))
+
+    query = request.GET.copy()
+    query.pop("page", None)
+    context = {
+        "form": form,
+        "page_obj": page_obj,
+        "query_string": query.urlencode(),
+        "is_filtered": any(filters.values()),
+    }
+    return render(request, "reports/page_list.html", context)
 
 
 @login_required

@@ -9,6 +9,28 @@ from .models import ScamReport
 from .utils import normalize_facebook_url
 
 
+class PageSearchForm(BootstrapFormMixin, forms.Form):
+    """GET filters for the page list. Every field is optional."""
+
+    VERIFIED = "verified"
+    UNVERIFIED = "unverified"
+    STATUS_CHOICES = [
+        ("", "Any verification status"),
+        (VERIFIED, "Has verified reports"),
+        (UNVERIFIED, "Only unverified allegations"),
+    ]
+
+    q = forms.CharField(
+        label="Page name or link", required=False, max_length=255,
+        widget=forms.TextInput(attrs={"type": "search", "placeholder": "Page name or facebook.com/… link"}),
+    )
+    category = forms.ChoiceField(
+        label="Scam category", required=False,
+        choices=[("", "All categories")] + ScamReport.Category.choices,
+    )
+    status = forms.ChoiceField(label="Verification", required=False, choices=STATUS_CHOICES)
+
+
 class MultipleFileInput(forms.ClearableFileInput):
     """File input that lets the user pick several files at once."""
 
