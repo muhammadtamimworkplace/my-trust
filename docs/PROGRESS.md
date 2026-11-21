@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Next task: **P1-T05** · Branch: `feature/p1-setup`
+> Last updated: 22 Nov 2026 · Phase 1 complete · Next task: **P2-T01** · Branch: `feature/p1-setup` (merge to `main` pending)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -16,6 +16,7 @@
 | **MariaDB (XAMPP)** | **10.11.20 LTS, port 3306** | upgraded from 10.4.32; used by My Trust |
 | MySQL (service `MySQL84`) | 8.4.9, 127.0.0.1:3307 | another project's server (`bomnal*`). **Not used, not modified.** |
 | Django (chosen) | 5.2 LTS | supports MariaDB 10.5+ |
+| **Virtual env** (P1-T05) | `venv\` (Python 3.13.17) | Django 5.2.19, mysqlclient 2.3.2, Pillow 13.0.0, python-dotenv 1.2.4 (+ asgiref 3.13.0, sqlparse 0.6.1, tzdata 2026.6); all prebuilt cp313 wheels; `pip check` clean; live DB connection as `mytrust_user` verified |
 
 ### My Trust database (P1-T04)
 
@@ -24,7 +25,7 @@
 | Database | `mytrust_db`, utf8mb4 / utf8mb4_unicode_ci |
 | Test database | `test_mytrust_db`, created and dropped by Django automatically (lifecycle verified) |
 | Account | `mytrust_user@localhost`, ALL on `mytrust\_db`.* and `test\_mytrust\_db`.* only |
-| Credentials | `C:\projects\MY-TRUST\.env` (32-char random password; ignored by Git via `.git/info/exclude` until P1-T03) |
+| Credentials | `C:\projects\MY-TRUST\.env` (32-char random password; ignored by `.gitignore`) |
 | Verification | 11/11 checks passed: login, encoding, read/write (incl. Bangla text), test-DB create/drop; denied on other DBs, other DB names, CREATE USER |
 
 ## MariaDB 10.4 → 10.11 upgrade record (22 Nov 2026)
@@ -64,7 +65,7 @@
 | P1 | T02 | Commit project documentation | ✅ 22 Nov | `docs: add implementation guide and progress tracker` |
 | P1 | T03 | Add .gitignore | ✅ 22 Nov | `chore: add gitignore for Python and Django` |
 | P1 | T04 | Create MySQL database and user | ✅ 22 Nov (done early, with the upgrade) | — (no repo files) |
-| P1 | T05 | Virtual env + pinned dependencies | ⬜ | |
+| P1 | T05 | Virtual env + pinned dependencies | ✅ 22 Nov | `chore: add pinned project dependencies` |
 | P2 | T01 | Initialize Django project | ⬜ | |
 | P2 | T02 | Settings from environment | ⬜ | |
 | P2 | T03 | MySQL connection | ⬜ | |
