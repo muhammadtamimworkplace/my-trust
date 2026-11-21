@@ -44,7 +44,7 @@ def report_create(request):
 def report_detail(request, pk):
     """One report. Rejected reports return 404 to everyone except the reporter and admins,
     so their existence is not revealed. Evidence and the admin note are private."""
-    report = get_object_or_404(ScamReport.objects.select_related("page", "reporter"), pk=pk)
+    report = get_object_or_404(ScamReport.objects.select_related("page__trust", "reporter"), pk=pk)
     if not report.is_visible_to(request.user):
         raise Http404("Report not found.")
     can_manage = report.is_managed_by(request.user)
