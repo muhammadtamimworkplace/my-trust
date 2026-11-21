@@ -104,10 +104,27 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# XAMPP MariaDB 10.11 via the dedicated mytrust_user account (never root).
+# Django's "mysql" backend supports both MySQL and MariaDB.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env_required('DB_NAME'),
+        'USER': env_required('DB_USER'),
+        'PASSWORD': env_required('DB_PASSWORD'),
+        'HOST': env_required('DB_HOST'),
+        'PORT': env_required('DB_PORT'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            # Strict mode for this connection only: invalid or oversized values
+            # raise errors instead of being silently truncated.
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+        'TEST': {
+            'NAME': 'test_mytrust_db',
+            'CHARSET': 'utf8mb4',
+            'COLLATION': 'utf8mb4_unicode_ci',
+        },
     }
 }
 

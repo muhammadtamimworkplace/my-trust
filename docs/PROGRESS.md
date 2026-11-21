@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phase 1 merged to `main` (`dfa90ea`) · Next task: **P2-T03** · Branch: `feature/p2-skeleton`
+> Last updated: 22 Nov 2026 · Phase 1 merged to `main` (`dfa90ea`) · Next task: **P2-T04** · Branch: `feature/p2-skeleton`
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -67,7 +67,7 @@
 | P1 | T05 | Virtual env + pinned dependencies | ✅ 22 Nov | `chore: add pinned project dependencies` |
 | P2 | T01 | Initialize Django project | ✅ 22 Nov | `chore: initialize Django project` |
 | P2 | T02 | Settings from environment | ✅ 22 Nov | `chore: load settings from environment variables` |
-| P2 | T03 | MySQL connection | ⬜ | |
+| P2 | T03 | MySQL connection | ✅ 22 Nov | `chore: configure MySQL database connection` |
 | P2 | T04 | Templates/static/media config | ⬜ | |
 | P2 | T05 | Create application modules | ⬜ | |
 | P2 | T06 | Base layout | ⬜ | |
