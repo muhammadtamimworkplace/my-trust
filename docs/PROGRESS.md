@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Next task: **P1-T03** · Branch: `feature/p1-setup`
+> Last updated: 22 Nov 2026 · Next task: **P1-T05** · Branch: `feature/p1-setup`
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -62,7 +62,7 @@
 |-------|------|------|--------|--------|
 | P1 | T01 | Verify development toolchain | ✅ 22 Nov | — (no file changes) |
 | P1 | T02 | Commit project documentation | ✅ 22 Nov | `docs: add implementation guide and progress tracker` |
-| P1 | T03 | Add .gitignore | ⬜ | |
+| P1 | T03 | Add .gitignore | ✅ 22 Nov | `chore: add gitignore for Python and Django` |
 | P1 | T04 | Create MySQL database and user | ✅ 22 Nov (done early, with the upgrade) | — (no repo files) |
 | P1 | T05 | Virtual env + pinned dependencies | ⬜ | |
 | P2 | T01 | Initialize Django project | ⬜ | |
