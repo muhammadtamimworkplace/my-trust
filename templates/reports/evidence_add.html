@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Add evidence · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="mt-card p-4 p-md-5">
+        <h1 class="h3 fw-bold mb-1">Add evidence</h1>
+        <p class="text-secondary mb-3">
+          For your report <a href="{% url 'reports:report_detail' report.pk %}">“{{ report.title }}”</a> about {{ report.page.name }}.
+        </p>
+
+        {% if report.admin_note %}
+          <div class="alert alert-info" role="note">
+            <div class="fw-semibold small">The administrator asked:</div>
+            {{ report.admin_note|linebreaksbr }}
+          </div>
+        {% endif %}
+
+        {% if remaining > 0 %}
+          <p class="small text-secondary">{{ attached }} file{{ attached|pluralize }} already attached · you can add up to {{ remaining }} more.</p>
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {% include "partials/_form_body.html" %}
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-accent"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload and send for review</button>
+              <a class="btn btn-outline-secondary" href="{% url 'reports:report_detail' report.pk %}">Cancel</a>
+            </div>
+          </form>
+        {% else %}
+          <div class="alert alert-warning mb-0" role="alert">
+            This report already has the maximum of {{ attached }} files. Please mention any further details to an administrator.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

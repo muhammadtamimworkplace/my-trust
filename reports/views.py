@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -6,12 +7,11 @@ from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import never_cache
 
-from .forms import ReportForm
+from .forms import AddEvidenceForm, ReportForm
 from .models import Evidence, ScamReport
+from .services import add_requested_evidence, reports_by_user, submit_report
 
 EVIDENCE_CONTENT_TYPES = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png"}
-from .services import reports_by_user, submit_report
-
 REPORTS_PER_PAGE = 10
 
 REPORT_FIELDS = ("category", "title", "description", "incident_date", "amount_lost")
@@ -54,6 +54,30 @@ def report_detail(request, pk):
         "evidence_list": report.evidence.all() if can_manage else [],
     }
     return render(request, "reports/report_detail.html", context)
+
+
+@login_required
+def evidence_add(request, pk):
+    """Reporter uploads extra evidence after an admin requested it (NEEDS_EVIDENCE)."""
+    report = get_object_or_404(ScamReport.objects.select_related("page"), pk=pk)
+    if report.reporter_id != request.user.pk:
+        raise PermissionDenied("Only the reporter can add evidence to this report.")
+    if report.status != ScamReport.Status.NEEDS_EVIDENCE:
+        messages.info(request, "More evidence can only be added when an administrator asks for it.")
+        return redirect("reports:report_detail", pk=report.pk)
+
+    attached = report.evidence.count()
+    remaining = settings.EVIDENCE_MAX_FILES - attached
+    if request.method == "POST":
+        form = AddEvidenceForm(request.POST, request.FILES, already_attached=attached)
+        if form.is_valid():
+            add_requested_evidence(report, form.cleaned_data["evidence"])
+            messages.success(request, "Thank you. Your new evidence was added and the report is back under review.")
+            return redirect("reports:report_detail", pk=report.pk)
+    else:
+        form = AddEvidenceForm(already_attached=attached)
+    context = {"report": report, "form": form, "attached": attached, "remaining": remaining}
+    return render(request, "reports/evidence_add.html", context)
 
 
 @never_cache

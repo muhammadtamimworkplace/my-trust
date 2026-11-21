@@ -45,6 +45,13 @@
           <h2 id="private-heading" class="h5 fw-bold mb-1"><i class="bi bi-lock me-1" aria-hidden="true"></i>Private to you and administrators</h2>
           <p class="small text-secondary">Other visitors cannot see this section.</p>
 
+          {% if report.status == "NEEDS_EVIDENCE" and report.reporter_id == user.pk %}
+            <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2" role="note">
+              <span><strong>More evidence requested.</strong> Add screenshots to send this report back for review.</span>
+              <a class="btn btn-sm btn-accent" href="{% url 'reports:evidence_add' report.pk %}"><i class="bi bi-upload me-1" aria-hidden="true"></i>Add evidence</a>
+            </div>
+          {% endif %}
+
           {% if report.admin_note %}
             <div class="mb-3">
               <div class="fw-semibold small">Admin note{% if report.reviewed_at %} ({{ report.reviewed_at|date:"j M Y" }}){% endif %}</div>

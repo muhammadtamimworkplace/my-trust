@@ -78,6 +78,14 @@ class EvidenceUploadMixin(forms.Form):
         return files
 
 
+class AddEvidenceForm(BootstrapFormMixin, EvidenceUploadMixin):
+    """Upload more screenshots to an existing report (when an admin requests them)."""
+
+    def __init__(self, *args, already_attached=0, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.already_attached = already_attached
+
+
 class ReportForm(BootstrapFormMixin, EvidenceUploadMixin, forms.ModelForm):
     """Report a Facebook page. The page itself is found or created from its link (P5-T02)."""
 

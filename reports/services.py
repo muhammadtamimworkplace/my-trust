@@ -43,6 +43,21 @@ def save_evidence_files(report, files):
     return attempted
 
 
+def add_requested_evidence(report, evidence_files):
+    """Attach extra evidence to a report in NEEDS_EVIDENCE and send it back to review (PENDING).
+
+    Callers check permissions (reporter only); this enforces the status rule.
+    """
+    if report.status != ScamReport.Status.NEEDS_EVIDENCE:
+        raise ValueError("Evidence can only be added when an administrator has requested it.")
+    with transaction.atomic():
+        save_evidence_files(report, evidence_files)
+        report.status = ScamReport.Status.PENDING
+        report.save(update_fields=["status", "updated_at"])
+    logger.info("Report %s: %d evidence file(s) added, back to review", report.pk, len(evidence_files))
+    return report
+
+
 def submit_report(*, reporter, page_name, page_url, report_data, evidence_files):
     """Create a scam report (status PENDING) with its evidence, atomically.
 
