@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phase 1 merged to `main` (`dfa90ea`) · Next task: **P3-T01** · Branch: `feature/p2-skeleton`
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T01** · Branch: `feature/p3-accounts`
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -72,14 +72,14 @@
 | P2 | T05 | Create application modules | ✅ 22 Nov | `chore: create application modules` |
 | P2 | T06 | Base layout | ✅ 22 Nov (Bootstrap 5.3.9, Icons 1.13.2, SRI) | `feat: add base layout with navbar and footer` |
 | P2 | T07 | Landing page | ✅ 22 Nov (6 tests; served on :8001; your browser/mobile check not yet reported) | `feat: add landing page` |
-| P3 | T01 | Custom User model with roles | ⬜ | |
-| P3 | T02 | User admin + superuser | ⬜ | |
-| P3 | T03 | Registration | ⬜ | |
-| P3 | T04 | Login & logout | ⬜ | |
-| P3 | T05 | Profile page | ⬜ | |
-| P3 | T06 | (S) Profile edit & password change | ⬜ | |
-| P3 | T07 | admin_required decorator | ⬜ | |
-| P3 | T08 | Accounts tests | ⬜ | |
+| P3 | T01 | Custom User model with roles | ✅ 22 Nov (first migrate; 7 model tests) | `feat: add custom user model with roles` |
+| P3 | T02 | User admin + superuser | ✅ code 22 Nov (4 admin tests) · ⬜ superuser: you run `createsuperuser` | `feat: register user model in admin` |
+| P3 | T03 | Registration | ✅ 22 Nov (12 tests incl. role injection + CSRF) | `feat: add user registration` |
+| P3 | T04 | Login & logout | ✅ 22 Nov (12 tests: session rotation, open-redirect, POST-only logout) | `feat: add login and logout` |
+| P3 | T05 | Profile page | ✅ 22 Nov (5 tests) | `feat: add user profile page` |
+| P3 | T06 | (S) Profile edit & password change | ✅ 22 Nov (10 tests) | `feat: add profile editing and password change` |
+| P3 | T07 | admin_required decorator | ✅ 22 Nov (6 tests) | `feat: add admin_required access decorator` |
+| P3 | T08 | Accounts tests | ✅ 22 Nov: covered by tests written in T01–T07 (56 accounts tests); no separate commit | — |
 | P4 | T01 | FacebookPage + URL normalization | ⬜ | |
 | P4 | T02 | ScamReport model | ⬜ | |
 | P4 | T03 | Evidence model + validators | ⬜ | |

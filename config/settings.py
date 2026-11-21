@@ -92,6 +92,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+# Custom user model (accounts/models.py). Must be set before the first migration.
+AUTH_USER_MODEL = 'accounts.User'
+
+# Where @login_required sends visitors, and where login/logout lead afterwards.
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'core:home'
+LOGOUT_REDIRECT_URL = 'core:home'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

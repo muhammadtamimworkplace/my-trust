@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Create an account · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="mt-card p-4 p-md-5">
+        <h1 class="h3 fw-bold mb-1">Create your account</h1>
+        <p class="text-secondary mb-4">Register to report suspicious pages and share feedback with the community.</p>
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% include "partials/_form_body.html" %}
+
+          <button type="submit" class="btn btn-accent w-100 py-2">Create account</button>
+        </form>
+
+        <p class="text-center small mt-4 mb-0">
+          Already have an account? <a href="{% url 'accounts:login' %}">Log in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

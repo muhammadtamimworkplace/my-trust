@@ -1,0 +1,23 @@
+from functools import wraps
+
+from django.contrib.auth.views import redirect_to_login
+from django.core.exceptions import PermissionDenied
+
+
+def admin_required(view_func):
+    """Allow only platform administrators (role ADMIN or superuser) into a view.
+
+    - Not logged in      -> redirect to the login page (then back here).
+    - Logged in, no role -> 403 Forbidden.
+    - Administrator      -> view runs normally.
+    """
+
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path())
+        if not request.user.is_platform_admin:
+            raise PermissionDenied("Administrator access required.")
+        return view_func(request, *args, **kwargs)
+
+    return wrapper

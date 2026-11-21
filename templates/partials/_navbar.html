@@ -1,5 +1,5 @@
 {# Site navigation. Links marked "placeholder" are connected when their pages exist: #}
-{# Browse (P7-T01), Report (P5-T02), Register (P3-T03), Login/Logout (P3-T04), Profile (P3-T05). #}
+{# Browse (P7-T01), Report (P5-T02). #}
 <nav class="navbar navbar-expand-lg navbar-dark mt-navbar" aria-label="Main navigation">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'core:home' %}">
@@ -29,18 +29,30 @@
 
       <ul class="navbar-nav align-items-lg-center gap-lg-2">
         {% if user.is_authenticated %}
+          {% if user.is_platform_admin %}
+            <li class="nav-item">
+              <a class="nav-link disabled" aria-disabled="true"><i class="bi bi-speedometer2 me-1" aria-hidden="true"></i>Dashboard</a> {# placeholder until P9-T01 #}
+            </li>
+          {% endif %}
           <li class="nav-item">
-            <span class="navbar-text"><i class="bi bi-person-circle me-1" aria-hidden="true"></i>{{ user.get_username }}</span>
+            {% url 'accounts:profile' as profile_url %}
+            <a class="nav-link{% if request.path == profile_url %} active{% endif %}"
+               {% if request.path == profile_url %}aria-current="page"{% endif %} href="{{ profile_url }}">
+              <i class="bi bi-person-circle me-1" aria-hidden="true"></i>{{ user.get_username }}
+            </a>
           </li>
           <li class="nav-item">
-            <button type="button" class="btn btn-outline-light btn-sm" disabled>Log out</button> {# placeholder #}
+            <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-light btn-sm">Log out</button>
+            </form>
           </li>
         {% else %}
           <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true">Log in</a> {# placeholder #}
+            <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-accent btn-sm disabled" aria-disabled="true">Register</a> {# placeholder #}
+            <a class="btn btn-accent btn-sm" href="{% url 'accounts:register' %}">Register</a>
           </li>
         {% endif %}
       </ul>
