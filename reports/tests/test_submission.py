@@ -87,9 +87,9 @@ class ReportCreateViewTests(TempMediaMixin, TestCase):
 
     def test_valid_submission_creates_pending_report_and_shows_message(self):
         response = self.client.post(URL, {**VALID_REPORT_POST, "evidence": [png_upload()]}, follow=True)
-        self.assertRedirects(response, reverse("accounts:profile"))
-        self.assertContains(response, "is now under review")
         report = ScamReport.objects.get()
+        self.assertRedirects(response, reverse("reports:report_detail", args=[report.pk]))
+        self.assertContains(response, "is now under review")
         self.assertEqual((report.reporter, report.status), (self.user, ScamReport.Status.PENDING))
         self.assertEqual(report.page.url, "https://www.facebook.com/example.shop")
         self.assertEqual(report.evidence.count(), 1)

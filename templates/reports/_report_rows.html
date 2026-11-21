@@ -4,7 +4,7 @@
     <div class="list-group-item px-0 py-3">
       <div class="d-flex flex-wrap justify-content-between gap-2">
         <div class="me-auto">
-          <div class="fw-semibold">{{ report.title }}</div>
+          <a class="fw-semibold text-decoration-none" href="{% url 'reports:report_detail' report.pk %}">{{ report.title }}</a>
           <div class="small text-secondary">
             <i class="bi bi-facebook me-1" aria-hidden="true"></i>{{ report.page.name }}
             · {{ report.get_category_display }}

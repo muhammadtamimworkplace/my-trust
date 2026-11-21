@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.shortcuts import redirect, render
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import ReportForm
+from .models import ScamReport
 from .services import reports_by_user, submit_report
 
 REPORTS_PER_PAGE = 10
@@ -29,10 +31,25 @@ def report_create(request):
                 request,
                 f"Thank you. Your report about “{report.page.name}” was submitted and is now under review.",
             )
-            return redirect("accounts:profile")  # report detail page arrives in P5-T04
+            return redirect("reports:report_detail", pk=report.pk)
     else:
         form = ReportForm()
     return render(request, "reports/report_form.html", {"form": form})
+
+
+def report_detail(request, pk):
+    """One report. Rejected reports return 404 to everyone except the reporter and admins,
+    so their existence is not revealed. Evidence and the admin note are private."""
+    report = get_object_or_404(ScamReport.objects.select_related("page", "reporter"), pk=pk)
+    if not report.is_visible_to(request.user):
+        raise Http404("Report not found.")
+    can_manage = report.is_managed_by(request.user)
+    context = {
+        "report": report,
+        "can_manage": can_manage,
+        "evidence_list": report.evidence.all() if can_manage else [],
+    }
+    return render(request, "reports/report_detail.html", context)
 
 
 @login_required
