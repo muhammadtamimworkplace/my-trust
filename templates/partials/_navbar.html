@@ -1,5 +1,5 @@
 {# Site navigation. Links marked "placeholder" are connected when their pages exist: #}
-{# Browse (P7-T01), Report (P5-T02), Profile (P3-T05). #}
+{# Browse (P7-T01), Report (P5-T02). #}
 <nav class="navbar navbar-expand-lg navbar-dark mt-navbar" aria-label="Main navigation">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'core:home' %}">
@@ -30,7 +30,11 @@
       <ul class="navbar-nav align-items-lg-center gap-lg-2">
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <span class="navbar-text"><i class="bi bi-person-circle me-1" aria-hidden="true"></i>{{ user.get_username }}</span>
+            {% url 'accounts:profile' as profile_url %}
+            <a class="nav-link{% if request.path == profile_url %} active{% endif %}"
+               {% if request.path == profile_url %}aria-current="page"{% endif %} href="{{ profile_url }}">
+              <i class="bi bi-person-circle me-1" aria-hidden="true"></i>{{ user.get_username }}
+            </a>
           </li>
           <li class="nav-item">
             <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">

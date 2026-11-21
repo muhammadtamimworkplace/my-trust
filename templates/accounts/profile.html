@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}My profile · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <section class="mt-card p-4 h-100" aria-labelledby="account-heading">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="mt-step-icon" aria-hidden="true"><i class="bi bi-person"></i></div>
+          <div>
+            <h1 id="account-heading" class="h4 fw-bold mb-0">{{ user.username }}</h1>
+            {% if user.is_platform_admin %}
+              <span class="badge text-bg-dark">Administrator</span>
+            {% else %}
+              <span class="badge text-bg-secondary">Member</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <dl class="mb-0">
+          {% if user.get_full_name %}
+            <dt class="small text-secondary">Name</dt>
+            <dd>{{ user.get_full_name }}</dd>
+          {% endif %}
+          <dt class="small text-secondary">Email <span class="fw-normal">(private)</span></dt>
+          <dd class="text-break">{{ user.email }}</dd>
+          <dt class="small text-secondary">Member since</dt>
+          <dd class="mb-0">{{ user.date_joined|date:"j F Y" }}</dd>
+        </dl>
+      </section>
+    </div>
+
+    <div class="col-lg-8">
+      <section class="mt-card p-4 h-100" aria-labelledby="reports-heading">
+        <h2 id="reports-heading" class="h5 fw-bold mb-3"><i class="bi bi-flag me-1" aria-hidden="true"></i>My reports</h2>
+        {# Report history and statuses are listed here from P5-T03. #}
+        <p class="text-secondary mb-0">You haven't submitted any reports yet.</p>
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}
