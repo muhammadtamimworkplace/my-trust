@@ -69,6 +69,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # My Trust apps (guide §6.2)
+    'core',
+    'accounts',
+    'reports',
+    'feedback',
+    'trustscore',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
