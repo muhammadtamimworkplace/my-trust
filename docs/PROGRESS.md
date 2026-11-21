@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T05** · Branch: `feature/p4-models` (Phase 3 merged: `5e68a02`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T06** · Branch: `feature/p4-models` (Phase 3 merged: `5e68a02`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -84,7 +84,7 @@
 | P4 | T02 | ScamReport model | ✅ 22 Nov (8 tests; DB CHECK amount ≥ 0) | `feat: add scam report model` |
 | P4 | T03 | Evidence model + validators | ✅ 22 Nov (14 tests: ext, size, Pillow content, UUID names) | `feat: add evidence model with upload validation` |
 | P4 | T04 | Feedback/Comment/Vote models | ✅ 22 Nov (8 tests; 2 UNIQUE + 1 CHECK in DB) | `feat: add feedback, comment and vote models` |
-| P4 | T05 | TrustEvaluation model | ⬜ | |
+| P4 | T05 | TrustEvaluation model | ✅ 22 Nov (5 tests) | `feat: add trust evaluation model` |
 | P4 | T06 | AdminAction model | ⬜ | |
 | P4 | T07 | Register models in admin | ⬜ | |
 | P4 | T08 | Demo seed command | ⬜ | |
