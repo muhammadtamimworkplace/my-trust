@@ -29,6 +29,11 @@
 
       <ul class="navbar-nav align-items-lg-center gap-lg-2">
         {% if user.is_authenticated %}
+          {% if user.is_platform_admin %}
+            <li class="nav-item">
+              <a class="nav-link disabled" aria-disabled="true"><i class="bi bi-speedometer2 me-1" aria-hidden="true"></i>Dashboard</a> {# placeholder until P9-T01 #}
+            </li>
+          {% endif %}
           <li class="nav-item">
             {% url 'accounts:profile' as profile_url %}
             <a class="nav-link{% if request.path == profile_url %} active{% endif %}"
