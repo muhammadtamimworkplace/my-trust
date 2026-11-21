@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T08** · Branch: `feature/p4-models` (Phase 3 merged: `5e68a02`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P4-T09** · Branch: `feature/p4-models` (Phase 3 merged: `5e68a02`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -88,7 +88,7 @@
 | P4 | T05 | TrustEvaluation model | ✅ 22 Nov (5 tests) | `feat: add trust evaluation model` |
 | P4 | T06 | AdminAction model | ✅ 22 Nov (5 tests) | `feat: add admin action audit log model` |
 | P4 | T07 | Register models in admin | ✅ 22 Nov (5 tests; trust + audit log read-only) | `feat: register domain models in admin` |
-| P4 | T08 | Demo seed command | ⬜ | |
+| P4 | T08 | Demo seed command | ✅ 22 Nov (6 tests; seeded mytrust_db: 6 users, 8 pages, 15 reports) | `feat: add demo data seeding command` |
 | P4 | T09 | Model constraint tests | ⬜ | |
 | P5 | T01 | Report form | ⬜ | |
 | P5 | T02 | Submission service + view | ⬜ | |
