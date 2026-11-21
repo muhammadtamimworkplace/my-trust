@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P5-T02** · Branch: `feature/p5-reporting` (Phases 3–4 merged: `5e68a02`, `06cacfe`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P5-T03** · Branch: `feature/p5-reporting` (Phases 3–4 merged: `5e68a02`, `06cacfe`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -91,7 +91,7 @@
 | P4 | T08 | Demo seed command | ✅ 22 Nov (6 tests; seeded mytrust_db: 6 users, 8 pages, 15 reports) | `feat: add demo data seeding command` |
 | P4 | T09 | Model constraint tests | ✅ 22 Nov: covered by tests written in T01–T08; no separate commit | — |
 | P5 | T01 | Report form | ✅ 22 Nov (9 tests; multi-file upload, 1–5 files) | `feat: add scam report form with validation` |
-| P5 | T02 | Submission service + view | ⬜ | |
+| P5 | T02 | Submission service + view | ✅ 22 Nov (10 tests; atomic incl. file cleanup) | `feat: implement report submission` |
 | P5 | T03 | My reports history | ⬜ | |
 | P5 | T04 | Report detail | ⬜ | |
 | P5 | T05 | Protected evidence serving | ⬜ | |
