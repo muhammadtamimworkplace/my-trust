@@ -101,3 +101,26 @@ class PageSearchTests(TestCase):
         response = self.client.get(URL)
         self.assertContains(response, f'href="{URL}">Browse pages')
         self.assertContains(response, 'aria-current="page"')
+
+
+class SearchEntryPointTests(TestCase):
+    def test_landing_search_submits_to_page_list(self):
+        response = self.client.get(reverse("core:home"))
+        self.assertContains(response, f'action="{URL}" method="get" role="search"')
+        self.assertNotContains(response, 'id="nav-search"')  # hero already has a big search box
+
+    def test_navbar_search_appears_on_other_pages(self):
+        response = self.client.get(reverse("accounts:login"))
+        self.assertContains(response, 'id="nav-search"')
+        self.assertContains(response, f'action="{URL}"')
+
+    def test_navbar_search_hidden_on_results_page_which_has_its_own_form(self):
+        self.assertNotContains(self.client.get(URL), 'id="nav-search"')
+
+    def test_search_from_landing_page_reaches_results(self):
+        page = FacebookPage.objects.create(name="Gadget Bazaar", url="facebook.com/gadget.bazaar")
+        reporter = User.objects.create_user("r", "r@example.com", "x")
+        ScamReport.objects.create(page=page, reporter=reporter, category=C.OTHER, status=S.PENDING,
+                                  title="A report title here", description="A description that is long enough to be valid.")
+        response = self.client.get(URL, {"q": "gadget"})
+        self.assertContains(response, "Gadget Bazaar")

@@ -14,8 +14,7 @@
           and report pages that cheated you.
         </p>
 
-        {# Results page is built in P7-T01. #}
-        <form class="mt-search mx-auto" action="/pages/" method="get" role="search">
+        <form class="mt-search mx-auto" action="{% url 'reports:page_list' %}" method="get" role="search">
           <label for="hero-search" class="visually-hidden">Facebook page name or URL</label>
           <div class="input-group input-group-lg">
             <span class="input-group-text" aria-hidden="true"><i class="bi bi-search"></i></span>

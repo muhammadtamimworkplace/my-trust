@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P7-T03** · Branch: `feature/p7-search` (Phases 3–6 merged: `5e68a02`, `06cacfe`, `227f867`, `390ac39`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P7-T04** · Branch: `feature/p7-search` (Phases 3–6 merged: `5e68a02`, `06cacfe`, `227f867`, `390ac39`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -102,7 +102,7 @@
 | P6 | T03 | Trust badge component | ✅ 22 Nov (7 tests; full + compact; disclaimer; no number for "Not enough data") | `feat: add trust score badge component` |
 | P7 | T01 | Page list search & filters | ✅ 22 Nov (13 tests; name or any-form link; category + verification filters) | `feat: add page search and filters` |
 | P7 | T02 | Page detail | ✅ 22 Nov (9 tests; 3 separate sections; prefilled "Report this page") | `feat: add Facebook page detail view` |
-| P7 | T03 | Connect landing/navbar search | ⬜ | |
+| P7 | T03 | Connect landing/navbar search | ✅ 22 Nov (4 tests) | `feat: connect landing and navbar search to page results` |
 | P7 | T04 | Search tests | ⬜ | |
 | P8 | T01 | Feedback create/update | ⬜ | |
 | P8 | T02 | Delete own feedback | ⬜ | |

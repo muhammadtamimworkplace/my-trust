@@ -64,6 +64,10 @@ body {
   color: var(--mt-teal-100);
 }
 
+.mt-nav-search .form-control {
+  min-width: 12rem;
+}
+
 /* ---- Buttons ---- */
 .btn-accent {
   --bs-btn-color: #fff;
