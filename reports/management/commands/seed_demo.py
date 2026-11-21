@@ -26,6 +26,7 @@ from PIL import Image, ImageDraw
 from dashboard.models import AdminAction
 from feedback.models import Comment, Feedback, FeedbackVote
 from reports.models import Evidence, FacebookPage, ScamReport
+from trustscore.services import recalculate_trust
 
 User = get_user_model()
 Cat = ScamReport.Category
@@ -188,6 +189,9 @@ class Command(BaseCommand):
         first_feedback = Feedback.objects.filter(page=pages["trendy.closet"], user=users["demo_tanvir"]).first()
         for voter in ("demo_rina", "demo_sadia"):
             FeedbackVote.objects.get_or_create(feedback=first_feedback, user=users[voter], defaults={"value": 1})
+
+        for page in pages.values():
+            recalculate_trust(page)
 
         return {
             "users": User.objects.filter(username__startswith=DEMO_USER_PREFIX).count(),

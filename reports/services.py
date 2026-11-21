@@ -4,6 +4,8 @@ import logging
 from django.db import transaction
 from django.db.models import Count
 
+from trustscore.services import recalculate_trust
+
 from .models import Evidence, FacebookPage, ScamReport
 
 logger = logging.getLogger(__name__)
@@ -54,6 +56,7 @@ def add_requested_evidence(report, evidence_files):
         save_evidence_files(report, evidence_files)
         report.status = ScamReport.Status.PENDING
         report.save(update_fields=["status", "updated_at"])
+        recalculate_trust(report.page)
     logger.info("Report %s: %d evidence file(s) added, back to review", report.pk, len(evidence_files))
     return report
 
@@ -63,7 +66,8 @@ def submit_report(*, reporter, page_name, page_url, report_data, evidence_files)
 
     `page_url` must already be canonical (ReportForm.clean_page_url). An existing
     page with that URL is reused and keeps its original name, so the same page is
-    never stored twice. Trust-score recalculation is added in P6-T02.
+    never stored twice. The page's trust snapshot is refreshed (the new report is
+    an unverified allegation, so only its pending count changes, not the score).
     """
     with transaction.atomic():
         page, created = FacebookPage.objects.get_or_create(
@@ -71,6 +75,7 @@ def submit_report(*, reporter, page_name, page_url, report_data, evidence_files)
         )
         report = ScamReport.objects.create(page=page, reporter=reporter, **report_data)
         save_evidence_files(report, evidence_files)
+        recalculate_trust(page)
 
     logger.info("Report %s submitted for page %s (new page: %s)", report.pk, page.pk, created)
     return report

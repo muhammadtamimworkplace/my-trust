@@ -8,6 +8,11 @@ A transparent, rule-based heuristic, not a statistical model. Principles:
 """
 import math
 
+from django.db.models import Count, Q
+
+from feedback.models import Feedback
+from reports.models import ScamReport
+
 from .models import TrustEvaluation
 
 Label = TrustEvaluation.Label
@@ -49,3 +54,35 @@ def calculate_score(positive, negative, verified_reports):
     else:
         label = Label.GOOD
     return score, label
+
+
+UNVERIFIED_STATUSES = [ScamReport.Status.PENDING, ScamReport.Status.NEEDS_EVIDENCE]
+
+
+def recalculate_trust(page):
+    """Rebuild and save the TrustEvaluation snapshot for one page (2 count queries + 1 write).
+
+    Call this after anything that changes a page's feedback or report statuses.
+    Hidden feedback is excluded; rejected reports count for nothing.
+    """
+    feedback = Feedback.objects.filter(page=page, is_hidden=False).aggregate(
+        positive=Count("pk", filter=Q(sentiment=Feedback.Sentiment.POSITIVE)),
+        negative=Count("pk", filter=Q(sentiment=Feedback.Sentiment.NEGATIVE)),
+    )
+    reports = ScamReport.objects.filter(page=page).aggregate(
+        verified=Count("pk", filter=Q(status=ScamReport.Status.APPROVED)),
+        pending=Count("pk", filter=Q(status__in=UNVERIFIED_STATUSES)),
+    )
+    score, label = calculate_score(feedback["positive"], feedback["negative"], reports["verified"])
+    trust, _ = TrustEvaluation.objects.update_or_create(
+        page=page,
+        defaults={
+            "score": score,
+            "label": label,
+            "positive_count": feedback["positive"],
+            "negative_count": feedback["negative"],
+            "verified_report_count": reports["verified"],
+            "pending_report_count": reports["pending"],
+        },
+    )
+    return trust
