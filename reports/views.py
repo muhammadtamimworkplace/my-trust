@@ -1,9 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 
 from .forms import ReportForm
-from .services import submit_report
+from .services import reports_by_user, submit_report
+
+REPORTS_PER_PAGE = 10
 
 REPORT_FIELDS = ("category", "title", "description", "incident_date", "amount_lost")
 
@@ -30,3 +33,10 @@ def report_create(request):
     else:
         form = ReportForm()
     return render(request, "reports/report_form.html", {"form": form})
+
+
+@login_required
+def my_reports(request):
+    """The logged-in user's own reports with their review status."""
+    page_obj = Paginator(reports_by_user(request.user), REPORTS_PER_PAGE).get_page(request.GET.get("page"))
+    return render(request, "reports/my_reports.html", {"page_obj": page_obj})

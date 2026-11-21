@@ -1,0 +1,22 @@
+{# Rows of the user's own reports. Expects `reports` annotated with evidence_count. #}
+<div class="list-group list-group-flush">
+  {% for report in reports %}
+    <div class="list-group-item px-0 py-3">
+      <div class="d-flex flex-wrap justify-content-between gap-2">
+        <div class="me-auto">
+          <div class="fw-semibold">{{ report.title }}</div>
+          <div class="small text-secondary">
+            <i class="bi bi-facebook me-1" aria-hidden="true"></i>{{ report.page.name }}
+            · {{ report.get_category_display }}
+            · {{ report.created_at|date:"j M Y" }}
+            · <i class="bi bi-image me-1" aria-hidden="true"></i>{{ report.evidence_count }} file{{ report.evidence_count|pluralize }}
+          </div>
+          {% if report.admin_note and report.status != "PENDING" %}
+            <div class="small mt-1"><span class="fw-semibold">Admin note:</span> {{ report.admin_note }}</div>
+          {% endif %}
+        </div>
+        <div>{% include "partials/_status_badge.html" with report=report %}</div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

@@ -2,10 +2,22 @@
 import logging
 
 from django.db import transaction
+from django.db.models import Count
 
 from .models import Evidence, FacebookPage, ScamReport
 
 logger = logging.getLogger(__name__)
+
+
+def reports_by_user(user):
+    """A user's own reports, newest first, with page and evidence count loaded in the
+    same query (no extra query per row)."""
+    return (
+        ScamReport.objects.filter(reporter=user)
+        .select_related("page")
+        .annotate(evidence_count=Count("evidence"))
+        .order_by("-created_at")
+    )
 
 
 def save_evidence_files(report, files):
