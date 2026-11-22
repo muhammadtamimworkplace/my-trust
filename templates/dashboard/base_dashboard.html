@@ -7,8 +7,9 @@
   <div class="row g-4">
     <nav class="col-lg-3" aria-label="Dashboard sections">
       <div class="mt-card p-2">
-        <div class="px-3 pt-2 pb-1 small text-secondary text-uppercase fw-semibold">Administration</div>
-        <ul class="nav nav-pills flex-column mt-dash-nav">
+        <div class="px-3 pt-2 pb-1 small text-secondary text-uppercase fw-semibold d-none d-lg-block">Administration</div>
+        {# A scrollable row of tabs on phones/tablets, a vertical sidebar on desktop. #}
+        <ul class="nav nav-pills flex-nowrap flex-lg-column mt-dash-nav">
           <li class="nav-item">
             <a class="nav-link{% if section == 'overview' %} active{% endif %}" href="{% url 'dashboard:overview' %}"><i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>Overview</a>
           </li>

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Access denied · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="mt-card p-5 text-center mx-auto mt-error">
+    <div class="mt-error-code" aria-hidden="true">403</div>
+    <h1 class="h3 fw-bold">You don't have access to this page</h1>
+    <p class="text-secondary">This area is restricted. If you think this is a mistake, contact an administrator.</p>
+    <a class="btn btn-accent" href="{% url 'core:home' %}">Go to the home page</a>
+  </div>
+</div>
+{% endblock %}

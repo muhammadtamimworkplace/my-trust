@@ -1,0 +1,18 @@
+{% load static %}<!doctype html>
+{# Standalone layout for 500 and CSRF-failure pages. Django renders those without a request #}
+{# context, and a 500 page must not depend on code that might be failing, so no navbar/partials. #}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}My Trust{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body class="mt-minimal">
+  <main class="mt-minimal-card">
+    <div class="mt-minimal-brand">My Trust</div>
+    {% block content %}{% endblock %}
+    <p><a href="/">Go to the home page</a></p>
+  </main>
+</body>
+</html>

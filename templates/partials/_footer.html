@@ -1,4 +1,4 @@
-{# Site footer. About/Contact pages are added in P10-T02. #}
+{# Site footer. #}
 <footer class="mt-footer mt-auto py-4">
   <div class="container">
     <div class="row gy-3 align-items-center">
@@ -12,9 +12,11 @@
         </p>
       </div>
       <div class="col-md-6 text-md-end small">
-        <a class="mt-footer-link disabled" aria-disabled="true">About</a> {# placeholder #}
+        <a class="mt-footer-link" href="{% url 'core:about' %}">About</a>
         <span class="mx-2 mt-footer-muted" aria-hidden="true">·</span>
-        <a class="mt-footer-link disabled" aria-disabled="true">Contact</a> {# placeholder #}
+        <a class="mt-footer-link" href="{% url 'core:contact' %}">Contact</a>
+        <span class="mx-2 mt-footer-muted" aria-hidden="true">·</span>
+        <a class="mt-footer-link" href="{% url 'reports:page_list' %}">Browse pages</a>
         <div class="mt-footer-muted mt-1">&copy; {% now "Y" %} My Trust · Undergraduate thesis project</div>
       </div>
     </div>

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Contact · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <article class="mt-card p-4 p-md-5">
+        <h1 class="h3 fw-bold">Contact &amp; help</h1>
+
+        {% if contact_email %}
+          <p>For general questions about My Trust, email
+            <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.</p>
+        {% endif %}
+
+        <h2 class="h5 fw-bold mt-4">I was scammed by a Facebook page</h2>
+        <p>
+          <a href="{% url 'reports:report_create' %}">Report the page</a> with a description and screenshots of your
+          payment and conversation. An administrator will review it.
+          If you lost money, also contact your bank or mobile-payment provider and the police.
+        </p>
+
+        <h2 class="h5 fw-bold mt-4">A question about my own report</h2>
+        <p>
+          Open <a href="{% url 'reports:my_reports' %}">My reports</a>. Each report shows its status and any note from
+          the administrator. If more evidence was requested, you can upload it from the report page.
+        </p>
+
+        <h2 class="h5 fw-bold mt-4">Something on the site is wrong or offensive</h2>
+        <p class="mb-0">
+          Administrators can hide inappropriate feedback and comments. If a report about your business is inaccurate,
+          please contact us{% if contact_email %} at the address above{% endif %} with details so it can be reviewed.
+        </p>
+      </article>
+    </div>
+  </div>
+</div>
+{% endblock %}
