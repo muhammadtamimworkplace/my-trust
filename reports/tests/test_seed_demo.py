@@ -128,3 +128,21 @@ class SeedDemoCommandTests(TestCase):
         self.assertRegex(demo_lines[0], r"^DEMO_USER_PASSWORD=[A-Za-z0-9]{16}$")
         self.assertEqual(lines[0], "SECRET_KEY='x'")              # other settings untouched
         self.assertEqual(lines[-1], "DB_PORT=3306")
+
+    def test_existing_demo_accounts_are_synced_to_the_configured_password(self):
+        """Regression (found in the fresh-install rehearsal): after re-cloning or restoring a
+        database, .env may hold a new DEMO_USER_PASSWORD while the demo accounts still have the
+        old one. seed_demo must make the accounts match .env, its single source of truth."""
+        self.run_command("--password", "Old-demo-pass-1")
+        self.run_command("--password", "New-demo-pass-2")
+        for username in ("demo_admin", "demo_rina"):
+            user = User.objects.get(username=username)
+            self.assertTrue(user.check_password("New-demo-pass-2"), username)
+            self.assertFalse(user.check_password("Old-demo-pass-1"), username)
+        self.assertFalse(User.objects.get(username="demo_admin").check_password(""))
+
+    def test_sync_never_touches_non_demo_accounts(self):
+        real = User.objects.create_user("real_person", "real@example.com", "Real-pass-123")
+        self.run_command("--password", TEST_PASSWORD)
+        real.refresh_from_db()
+        self.assertTrue(real.check_password("Real-pass-123"))

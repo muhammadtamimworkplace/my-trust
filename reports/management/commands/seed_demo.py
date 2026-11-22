@@ -147,9 +147,11 @@ class Command(BaseCommand):
                 username=username,
                 defaults={"email": f"{username}@demo.mytrust.test", "first_name": first, "last_name": last, "role": role},
             )
-            if created:
+            # DEMO_USER_PASSWORD (.env) is the single source of truth: existing demo accounts
+            # are re-synced too, e.g. after re-cloning the project or restoring a database.
+            if created or not user.check_password(password):
                 user.set_password(password)
-                user.save()
+                user.save(update_fields=["password"] if not created else None)
             users[username] = user
 
         pages = {}
