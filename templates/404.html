@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Page not found · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="mt-card p-5 text-center mx-auto mt-error">
+    <div class="mt-error-code" aria-hidden="true">404</div>
+    <h1 class="h3 fw-bold">Page not found</h1>
+    <p class="text-secondary">The page you were looking for doesn't exist or is no longer available.</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      <a class="btn btn-accent" href="{% url 'core:home' %}">Go to the home page</a>
+      <a class="btn btn-outline-secondary" href="{% url 'reports:page_list' %}">Browse reported pages</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

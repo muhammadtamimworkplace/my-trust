@@ -226,6 +226,47 @@ body {
   background: var(--mt-slate-50);
 }
 
+/* ---- Error pages ---- */
+.mt-error {
+  max-width: 36rem;
+}
+
+.mt-error-code {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--mt-teal-700);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+/* Standalone layout (templates/base_minimal.html) for 500 and CSRF pages: no Bootstrap. */
+.mt-minimal {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--mt-slate-50);
+  color: #1e293b;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.mt-minimal-card {
+  max-width: 32rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid var(--mt-teal-700);
+  border-radius: 0.5rem;
+  padding: 2rem;
+}
+
+.mt-minimal-brand {
+  font-weight: 700;
+  color: var(--mt-navy-800);
+  margin-bottom: 1rem;
+}
+
 /* ---- Footer ---- */
 .mt-footer {
   background: var(--mt-navy-900);
