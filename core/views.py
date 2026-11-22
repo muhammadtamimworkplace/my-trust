@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+from feedback.models import Feedback
 from reports.models import ScamReport
 
 Category = ScamReport.Category
@@ -20,6 +21,27 @@ SCAM_CATEGORIES = [
 ]
 
 
+RECENT_REPORTS = 3
+RECENT_FEEDBACK = 5
+
+
+def recent_activity():
+    """Latest public community activity for the landing page.
+
+    Only admin-verified reports (never unverified allegations or rejected ones) and
+    visible feedback are shown, by username only.
+    """
+    verified_reports = (
+        ScamReport.objects.filter(status=ScamReport.Status.APPROVED)
+        .select_related("page").order_by("-created_at")[:RECENT_REPORTS]
+    )
+    feedback = (
+        Feedback.objects.filter(is_hidden=False)
+        .select_related("page", "user").order_by("-created_at")[:RECENT_FEEDBACK]
+    )
+    return {"recent_verified_reports": verified_reports, "recent_feedback": feedback}
+
+
 def home(request):
-    """Public landing page: hero with search, how it works, scam categories."""
-    return render(request, "core/home.html", {"scam_categories": SCAM_CATEGORIES})
+    """Public landing page: hero with search, how it works, community activity, scam categories."""
+    return render(request, "core/home.html", {"scam_categories": SCAM_CATEGORIES, **recent_activity()})

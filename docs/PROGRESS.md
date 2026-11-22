@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P8-T01** · Branch: `feature/p7-search` (Phases 3–6 merged: `5e68a02`, `06cacfe`, `227f867`, `390ac39`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P9-T01** · Branch: `feature/p8-feedback` (Phases 3–7 merged, latest `05f27f7`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -104,12 +104,12 @@
 | P7 | T02 | Page detail | ✅ 22 Nov (9 tests; 3 separate sections; prefilled "Report this page") | `feat: add Facebook page detail view` |
 | P7 | T03 | Connect landing/navbar search | ✅ 22 Nov (4 tests) | `feat: connect landing and navbar search to page results` |
 | P7 | T04 | Search tests | ✅ 22 Nov: covered by tests written in T01–T03; no separate commit | — |
-| P8 | T01 | Feedback create/update | ⬜ | |
-| P8 | T02 | Delete own feedback | ⬜ | |
-| P8 | T03 | (S) Comments on reports | ⬜ | |
-| P8 | T04 | (S) Feedback voting | ⬜ | |
-| P8 | T05 | (S) Community activity | ⬜ | |
-| P8 | T06 | Feedback tests | ⬜ | |
+| P8 | T01 | Feedback create/update | ✅ 22 Nov (11 tests; one per user per page; recalculates score; moderator hide kept) | `feat: add page feedback submission` |
+| P8 | T02 | Delete own feedback | ✅ 22 Nov (6 tests; owner only, others get 404) | `feat: allow users to delete their feedback` |
+| P8 | T03 | (S) Comments on reports | ✅ 22 Nov (7 tests; public reports only; hidden excluded) | `feat: add comments on reports` |
+| P8 | T04 | (S) Feedback voting | ✅ 22 Nov (10 tests; toggle; no own/hidden votes; no score effect) | `feat: add feedback voting` |
+| P8 | T05 | (S) Community activity | ✅ 22 Nov (4 tests; verified reports + visible feedback only) | `feat: show recent community activity` |
+| P8 | T06 | Feedback tests | ✅ 22 Nov: covered by tests written in T01–T05; no separate commit | — |
 | P9 | T01 | Dashboard overview stats | ⬜ | |
 | P9 | T02 | Report review queue | ⬜ | |
 | P9 | T03 | Review decisions | ⬜ | |

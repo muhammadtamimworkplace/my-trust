@@ -3,8 +3,9 @@ import logging
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Count, Max, Q
+from django.db.models import Count, Max, OuterRef, Q, Subquery
 
+from feedback.models import FeedbackVote
 from trustscore.services import recalculate_trust
 
 from .models import Evidence, FacebookPage, ScamReport
@@ -56,15 +57,38 @@ def search_pages(query="", category="", verification=""):
 SECTION_LIMIT = 20
 
 
-def page_overview(page):
+def page_has_public_info(page):
+    """True if the page has any public report (not rejected) or visible feedback.
+
+    Pages without any are not listed or opened publicly, so rejected complaints
+    cannot still "name" a page. Single source of truth for that rule.
+    """
+    return (
+        page.reports.exclude(status=ScamReport.Status.REJECTED).exists()
+        or page.feedback.filter(is_hidden=False).exists()
+    )
+
+
+def page_overview(page, user=None):
     """Public content of a page's detail view, in the three separate sections of guide §9.3.
 
-    Rejected reports are never included; hidden feedback is excluded.
+    Rejected reports are never included; hidden feedback is excluded. Each feedback
+    carries its like/dislike counts, and `my_vote` (1, -1 or None) when `user` is given.
     """
     public = page.reports.select_related("reporter").exclude(status=ScamReport.Status.REJECTED)
     verified = public.filter(status=ScamReport.Status.APPROVED)
     allegations = public.exclude(status=ScamReport.Status.APPROVED)
-    feedback = page.feedback.filter(is_hidden=False).select_related("user").order_by("-created_at")
+    feedback = (
+        page.feedback.filter(is_hidden=False).select_related("user")
+        .annotate(
+            likes=Count("votes", filter=Q(votes__value=1)),
+            dislikes=Count("votes", filter=Q(votes__value=-1)),
+        )
+        .order_by("-created_at")
+    )
+    if user is not None and user.is_authenticated:
+        my_vote = FeedbackVote.objects.filter(feedback=OuterRef("pk"), user=user).values("value")[:1]
+        feedback = feedback.annotate(my_vote=Subquery(my_vote))
     return {
         "verified_reports": verified[:SECTION_LIMIT],
         "verified_total": verified.count(),

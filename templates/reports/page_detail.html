@@ -59,7 +59,44 @@
         <h2 id="feedback-heading" class="h5 fw-bold mb-1">
           <i class="bi bi-people me-1" aria-hidden="true"></i>Community feedback ({{ feedback_total }})
         </h2>
-        <p class="small text-secondary mb-0">Opinions from registered users, shown separately from verified findings.</p>
+        <p class="small text-secondary">Opinions from registered users, shown separately from verified findings.</p>
+
+        <div class="border rounded p-3 mb-3 bg-body-tertiary">
+          {% if user.is_authenticated %}
+            <form method="post" action="{% url 'feedback:feedback_save' page.pk %}" novalidate>
+              {% csrf_token %}
+              <div class="fw-semibold small mb-2">{% if my_feedback %}Your feedback (you can change it){% else %}Share your experience{% endif %}</div>
+              {% if my_feedback.is_hidden %}
+                <div class="alert alert-secondary py-2 small" role="note">A moderator has hidden your feedback. Editing it will not make it visible again.</div>
+              {% endif %}
+              <div class="mb-2" role="radiogroup" aria-label="Your experience">
+                {% for radio in feedback_form.sentiment %}
+                  <div class="form-check form-check-inline">
+                    {{ radio.tag }}
+                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                      {% if radio.data.value == "POSITIVE" %}<span aria-hidden="true">👍</span> Positive{% else %}<span aria-hidden="true">👎</span> Negative{% endif %}
+                    </label>
+                  </div>
+                {% endfor %}
+              </div>
+              <label class="visually-hidden" for="{{ feedback_form.comment.id_for_label }}">{{ feedback_form.comment.label }}</label>
+              {{ feedback_form.comment }}
+              <button type="submit" class="btn btn-sm btn-accent mt-2">{% if my_feedback %}Update feedback{% else %}Submit feedback{% endif %}</button>
+            </form>
+            {% if my_feedback %}
+              <form method="post" action="{% url 'feedback:feedback_delete' my_feedback.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-link text-danger px-0 mt-1">Delete my feedback</button>
+              </form>
+            {% endif %}
+          {% else %}
+            <p class="small mb-0">
+              <a href="{% url 'accounts:login' %}?next={{ request.path }}">Log in</a> or
+              <a href="{% url 'accounts:register' %}">register</a> to share your experience with this page.
+            </p>
+          {% endif %}
+        </div>
+
         {% if feedback %}
           <ul class="list-group list-group-flush">
             {% for item in feedback %}
@@ -74,6 +111,26 @@
                 </div>
                 {% if item.comment %}<p class="small mb-0 mt-1">{{ item.comment }}</p>{% endif %}
                 <div class="small text-secondary">{{ item.created_at|date:"j M Y" }}</div>
+                <div class="d-flex align-items-center gap-2 mt-1 small">
+                  {% if user.is_authenticated and item.user_id != user.pk %}
+                    <form method="post" action="{% url 'feedback:feedback_vote' item.pk %}" class="d-inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="value" value="like">
+                      <button type="submit" class="btn btn-sm {% if item.my_vote == 1 %}btn-success{% else %}btn-outline-secondary{% endif %}" aria-pressed="{% if item.my_vote == 1 %}true{% else %}false{% endif %}" aria-label="Helpful">
+                        <span aria-hidden="true">👍</span> {{ item.likes }}
+                      </button>
+                    </form>
+                    <form method="post" action="{% url 'feedback:feedback_vote' item.pk %}" class="d-inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="value" value="dislike">
+                      <button type="submit" class="btn btn-sm {% if item.my_vote == -1 %}btn-danger{% else %}btn-outline-secondary{% endif %}" aria-pressed="{% if item.my_vote == -1 %}true{% else %}false{% endif %}" aria-label="Not helpful">
+                        <span aria-hidden="true">👎</span> {{ item.dislikes }}
+                      </button>
+                    </form>
+                  {% else %}
+                    <span class="text-secondary"><span aria-hidden="true">👍</span> {{ item.likes }} · <span aria-hidden="true">👎</span> {{ item.dislikes }}</span>
+                  {% endif %}
+                </div>
               </li>
             {% endfor %}
           </ul>
