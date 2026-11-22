@@ -1,9 +1,13 @@
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.decorators import admin_required
+from reports.models import ScamReport
 
-from .services import overview_stats, report_queue
+from .forms import ReviewForm
+from .services import decide_report, overview_stats, report_queue
 
 REPORTS_PER_PAGE = 15
 
@@ -24,3 +28,31 @@ def report_queue_view(request):
         "query_string": f"status={active}",
     }
     return render(request, "dashboard/report_queue.html", context)
+
+
+@admin_required
+def report_review(request, pk):
+    """Review one report: read it, see the evidence, decide."""
+    report = get_object_or_404(
+        ScamReport.objects.select_related("page__trust", "reporter").prefetch_related("evidence"), pk=pk
+    )
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            try:
+                decide_report(admin=request.user, report=report,
+                              decision=form.cleaned_data["decision"], note=form.cleaned_data["note"])
+            except ValidationError as exc:
+                form.add_error(None, exc.messages[0])
+            else:
+                messages.success(request, f"Decision saved: {report.get_status_display()}.")
+                return redirect("dashboard:report_queue")
+    else:
+        form = ReviewForm()
+
+    context = {
+        "section": "queue", "report": report, "form": form,
+        "evidence_list": report.evidence.all(),
+        "history": report.admin_actions.select_related("admin"),
+    }
+    return render(request, "dashboard/report_review.html", context)

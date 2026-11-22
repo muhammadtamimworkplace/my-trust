@@ -1,9 +1,16 @@
 """Queries and actions behind the admin dashboard."""
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.db.models import Count, Q
+from django.utils import timezone
 
 from feedback.models import Comment, Feedback
 from reports.models import FacebookPage, ScamReport
+from trustscore.services import recalculate_trust
+
+from .models import AdminAction
 
 User = get_user_model()
 S = ScamReport.Status
@@ -95,3 +102,44 @@ def report_queue(tab):
         reports = reports.filter(status=active)
     reports = reports.order_by("created_at" if active == S.PENDING else "-created_at")
     return reports, tabs, active
+
+
+DECISIONS = {
+    # decision -> (new report status, audit action, note required?)
+    "approve": (S.APPROVED, AdminAction.ActionType.APPROVE_REPORT, False),
+    "reject": (S.REJECTED, AdminAction.ActionType.REJECT_REPORT, True),
+    "request_evidence": (S.NEEDS_EVIDENCE, AdminAction.ActionType.REQUEST_EVIDENCE, True),
+}
+
+
+def decide_report(*, admin, report, decision, note=""):
+    """Apply an administrator's decision to a report.
+
+    Atomically: new status + note + review time, an audit-log entry, and a refreshed
+    trust score for the page. Raises ValidationError for rule violations:
+      - unknown decision, or a missing note where one is required
+      - the admin reviewing their own report (conflict of interest)
+      - requesting evidence when the report already has the maximum number of files
+    """
+    if decision not in DECISIONS:
+        raise ValidationError("Choose a decision.")
+    new_status, action_type, note_required = DECISIONS[decision]
+    note = (note or "").strip()
+    if note_required and not note:
+        raise ValidationError("Write a note for the reporter explaining this decision.")
+    if report.reporter_id == admin.pk:
+        raise ValidationError("You cannot review your own report. Ask another administrator.")
+    if decision == "request_evidence" and report.evidence.count() >= settings.EVIDENCE_MAX_FILES:
+        raise ValidationError(
+            f"This report already has the maximum of {settings.EVIDENCE_MAX_FILES} evidence files, "
+            "so more cannot be requested. Approve or reject it instead."
+        )
+
+    with transaction.atomic():
+        report.status = new_status
+        report.admin_note = note
+        report.reviewed_at = timezone.now()
+        report.save(update_fields=["status", "admin_note", "reviewed_at", "updated_at"])
+        AdminAction.objects.create(admin=admin, action_type=action_type, report=report, note=note)
+        recalculate_trust(report.page)
+    return report

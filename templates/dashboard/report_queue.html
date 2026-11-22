@@ -24,7 +24,7 @@
         <tbody>
           {% for report in page_obj.object_list %}
             <tr>
-              <td><a class="fw-semibold text-decoration-none" href="{% url 'reports:report_detail' report.pk %}">{{ report.title }}</a></td>
+              <td><a class="fw-semibold text-decoration-none" href="{% url 'dashboard:report_review' report.pk %}">{{ report.title }}</a></td>
               <td>{{ report.page.name }}</td>
               <td>{{ report.get_category_display }}</td>
               <td>{{ report.reporter.username }}</td>
