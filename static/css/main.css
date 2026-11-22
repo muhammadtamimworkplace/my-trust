@@ -187,6 +187,16 @@ body {
 /* ---- Dashboard ---- */
 .mt-dash-nav .nav-link {
   color: var(--mt-navy-800);
+  white-space: nowrap;
+}
+
+/* Below desktop width the dashboard menu is one horizontally scrollable row. */
+@media (max-width: 991.98px) {
+  .mt-dash-nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
 }
 
 .mt-dash-nav .nav-link.active {
