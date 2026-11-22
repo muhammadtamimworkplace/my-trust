@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P11-T03** · Branch: `feature/p11-security` (Phases 3–10 merged, latest `aa50501`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P12-T01** · Branch: `feature/p11-security` (Phases 3–10 merged, latest `aa50501`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -123,7 +123,7 @@
 | P10 | T03 | Error pages | ✅ 22 Nov (5 tests; 403, 404, 500, CSRF; no technical details) | `feat: add custom error pages` |
 | P11 | T01 | Security settings | ✅ 22 Nov (7 tests; check --deploy reviewed in docs/security-review.md; test suite 130s → 11s) | `chore: harden security settings` |
 | P11 | T02 | Full test run & fixes | ✅ 22 Nov: 370 tests OK in ~12 s; coverage 98.8% → 99.5% (branch); 1 bug fixed (seed reset ProtectedError); dead stubs removed | `chore: add coverage…`, `fix: let seed_demo reset…`, `test: cover…`, `refactor: remove unused…` |
-| P11 | T03 | Manual test case document | ⬜ | |
+| P11 | T03 | Manual test case document | ✅ prepared 22 Nov: 51 manual cases (all "Not run" until performed) + real automated summary (370 tests, 99.5%) in `docs/testing/test-cases.md` | `docs: add manual test cases and results` |
 | P12 | T01 | README | ⬜ | |
 | P12 | T02 | System diagrams | ⬜ | |
 | P12 | T03 | Screenshots | ⬜ | |
