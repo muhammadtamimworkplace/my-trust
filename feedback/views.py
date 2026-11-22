@@ -4,11 +4,11 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
-from reports.models import FacebookPage
+from reports.models import FacebookPage, ScamReport
 from reports.services import page_has_public_info
 
-from .forms import FeedbackForm
-from .models import Feedback
+from .forms import CommentForm, FeedbackForm
+from .models import Comment, Feedback
 from .services import delete_feedback, save_feedback
 
 
@@ -44,3 +44,22 @@ def feedback_delete(request, pk):
     delete_feedback(feedback)
     messages.success(request, "Your feedback was deleted.")
     return redirect("reports:page_detail", pk=page_id)
+
+
+@login_required
+@require_POST
+def comment_create(request, report_id):
+    """Add a comment to a public report. Rejected reports cannot be discussed."""
+    report = get_object_or_404(ScamReport, pk=report_id)
+    if not report.is_public:
+        raise Http404("Report not found.")
+
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        Comment.objects.create(report=report, user=request.user, body=form.cleaned_data["body"].strip())
+        messages.success(request, "Your comment was posted.")
+    else:
+        for errors in form.errors.values():
+            for error in errors:
+                messages.error(request, error)
+    return redirect("reports:report_detail", pk=report.pk)

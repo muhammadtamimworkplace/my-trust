@@ -7,4 +7,5 @@ app_name = "feedback"
 urlpatterns = [
     path("pages/<int:page_id>/feedback/", views.feedback_save, name="feedback_save"),
     path("feedback/<int:pk>/delete/", views.feedback_delete, name="feedback_delete"),
+    path("reports/<int:report_id>/comments/", views.comment_create, name="comment_create"),
 ]

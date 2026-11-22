@@ -7,7 +7,7 @@ from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import never_cache
 
-from feedback.forms import FeedbackForm
+from feedback.forms import CommentForm, FeedbackForm
 from feedback.models import Feedback
 
 from .forms import AddEvidenceForm, PageSearchForm, ReportForm
@@ -113,6 +113,9 @@ def report_detail(request, pk):
         "can_manage": can_manage,
         "evidence_list": report.evidence.all() if can_manage else [],
     }
+    if report.is_public:  # rejected reports have no public discussion
+        context["comments"] = report.comments.filter(is_hidden=False).select_related("user")
+        context["comment_form"] = CommentForm()
     return render(request, "reports/report_detail.html", context)
 
 
