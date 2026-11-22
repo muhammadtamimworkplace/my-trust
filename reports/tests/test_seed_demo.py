@@ -80,3 +80,17 @@ class SeedDemoCommandTests(TestCase):
         self.assertEqual(list(FacebookPage.objects.all()), [real_page])
         self.assertEqual(ScamReport.objects.count() + Evidence.objects.count() + AdminAction.objects.count(), 0)
         self.assertFalse(any(f.exists() for f in stored_files))
+
+    def test_reset_works_when_a_demo_user_reported_a_real_page(self):
+        """Regression: during demo rehearsals a demo account may report a real page.
+        That report used to block deleting the demo user (ProtectedError)."""
+        self.run_command("--password", TEST_PASSWORD)
+        real_page = FacebookPage.objects.create(name="Real Shop", url="facebook.com/real.shop")
+        ScamReport.objects.create(page=real_page, reporter=User.objects.get(username="demo_rina"), category="OTHER",
+                                  title="Rehearsal report title", description="Submitted while rehearsing the demo.")
+        self.run_command("--reset")
+        self.assertFalse(User.objects.filter(username__startswith="demo_").exists())
+        self.assertFalse(ScamReport.objects.exists())
+        self.assertEqual(list(FacebookPage.objects.all()), [real_page])  # real page itself is kept
+        from trustscore.models import TrustEvaluation
+        self.assertEqual(TrustEvaluation.objects.get(page=real_page).pending_report_count, 0)  # snapshot refreshed

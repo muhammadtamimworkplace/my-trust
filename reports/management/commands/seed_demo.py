@@ -20,6 +20,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from PIL import Image, ImageDraw
 
@@ -237,13 +238,25 @@ class Command(BaseCommand):
         return password
 
     def reset(self):
-        demo_reports = ScamReport.objects.filter(page__url__startswith=DEMO_URL_PREFIX)
+        """Remove demo data only. A report counts as demo data if it is about a demo page
+        OR was written by a demo account (e.g. while rehearsing the demo on a real page);
+        otherwise that report would block deleting the demo account (PROTECT)."""
+        demo_reports = ScamReport.objects.filter(
+            Q(page__url__startswith=DEMO_URL_PREFIX) | Q(reporter__username__startswith=DEMO_USER_PREFIX)
+        )
         with transaction.atomic():
+            touched_real_pages = list(
+                FacebookPage.objects.exclude(url__startswith=DEMO_URL_PREFIX)
+                .filter(Q(reports__in=demo_reports) | Q(feedback__user__username__startswith=DEMO_USER_PREFIX))
+                .distinct()
+            )
             for evidence in Evidence.objects.filter(report__in=demo_reports):
-                evidence.file.delete(save=False)  # remove the generated image from media/
+                evidence.file.delete(save=False)  # remove the image file from media/
             AdminAction.objects.filter(admin__username__startswith=DEMO_USER_PREFIX).delete()
             AdminAction.objects.filter(report__in=demo_reports).delete()
             deleted_reports, _ = demo_reports.delete()  # cascades to evidence + comments
             FacebookPage.objects.filter(url__startswith=DEMO_URL_PREFIX).delete()  # cascades feedback
             deleted_users, _ = User.objects.filter(username__startswith=DEMO_USER_PREFIX).delete()
+            for page in touched_real_pages:  # their counts changed: refresh the trust snapshot
+                recalculate_trust(page)
         self.stdout.write(self.style.SUCCESS(f"Demo data removed ({deleted_reports} report-related rows, {deleted_users} user-related rows)."))
