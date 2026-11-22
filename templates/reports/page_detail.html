@@ -111,6 +111,26 @@
                 </div>
                 {% if item.comment %}<p class="small mb-0 mt-1">{{ item.comment }}</p>{% endif %}
                 <div class="small text-secondary">{{ item.created_at|date:"j M Y" }}</div>
+                <div class="d-flex align-items-center gap-2 mt-1 small">
+                  {% if user.is_authenticated and item.user_id != user.pk %}
+                    <form method="post" action="{% url 'feedback:feedback_vote' item.pk %}" class="d-inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="value" value="like">
+                      <button type="submit" class="btn btn-sm {% if item.my_vote == 1 %}btn-success{% else %}btn-outline-secondary{% endif %}" aria-pressed="{% if item.my_vote == 1 %}true{% else %}false{% endif %}" aria-label="Helpful">
+                        <span aria-hidden="true">👍</span> {{ item.likes }}
+                      </button>
+                    </form>
+                    <form method="post" action="{% url 'feedback:feedback_vote' item.pk %}" class="d-inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="value" value="dislike">
+                      <button type="submit" class="btn btn-sm {% if item.my_vote == -1 %}btn-danger{% else %}btn-outline-secondary{% endif %}" aria-pressed="{% if item.my_vote == -1 %}true{% else %}false{% endif %}" aria-label="Not helpful">
+                        <span aria-hidden="true">👎</span> {{ item.dislikes }}
+                      </button>
+                    </form>
+                  {% else %}
+                    <span class="text-secondary"><span aria-hidden="true">👍</span> {{ item.likes }} · <span aria-hidden="true">👎</span> {{ item.dislikes }}</span>
+                  {% endif %}
+                </div>
               </li>
             {% endfor %}
           </ul>

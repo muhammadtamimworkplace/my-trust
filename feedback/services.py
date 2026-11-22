@@ -1,9 +1,10 @@
 """Business logic for community feedback."""
+from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from trustscore.services import recalculate_trust
 
-from .models import Feedback
+from .models import Feedback, FeedbackVote
 
 
 def save_feedback(*, user, page, sentiment, comment=""):
@@ -27,3 +28,32 @@ def delete_feedback(feedback):
     with transaction.atomic():
         feedback.delete()
         recalculate_trust(page)
+
+
+def vote_on_feedback(*, user, feedback, value):
+    """Like (+1) or dislike (-1) someone else's feedback, as a toggle.
+
+    - same vote again  -> removes it
+    - opposite vote    -> switches it
+    - no vote yet      -> creates it
+    Returns the user's vote after the call: 1, -1, or None (removed).
+    Votes never affect the trust score.
+    """
+    if value not in (FeedbackVote.Value.LIKE, FeedbackVote.Value.DISLIKE):
+        raise ValidationError("Invalid vote.")
+    if feedback.user_id == user.pk:
+        raise ValidationError("You cannot vote on your own feedback.")
+    if feedback.is_hidden:
+        raise ValidationError("This feedback is not available.")
+
+    with transaction.atomic():
+        existing = FeedbackVote.objects.filter(feedback=feedback, user=user).first()
+        if existing is None:
+            FeedbackVote.objects.create(feedback=feedback, user=user, value=value)
+            return value
+        if existing.value == value:
+            existing.delete()
+            return None
+        existing.value = value
+        existing.save(update_fields=["value"])
+        return value

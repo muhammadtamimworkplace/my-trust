@@ -63,7 +63,7 @@ def page_detail(request, pk):
         "page": page,
         "my_feedback": my_feedback,
         "feedback_form": FeedbackForm(instance=my_feedback) if request.user.is_authenticated else None,
-        **page_overview(page),
+        **page_overview(page, request.user),
     }
     return render(request, "reports/page_detail.html", context)
 
