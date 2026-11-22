@@ -26,9 +26,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 
+PLACEHOLDER_VALUES = {'change-me'}  # used in .env.example; never valid as a real value
+
+
 def env_required(name):
-    """Return a required environment variable or stop with a clear error."""
+    """Return a required environment variable or stop with a clear error.
+
+    The placeholder from .env.example is rejected too, so a copied but unedited
+    .env cannot run the site with a publicly known SECRET_KEY.
+    """
     value = os.environ.get(name)
+    if value in PLACEHOLDER_VALUES:
+        raise ImproperlyConfigured(
+            f"Environment variable {name!r} still has the placeholder value from .env.example. "
+            "Set a real value in .env."
+        )
     if not value:
         raise ImproperlyConfigured(
             f"Missing required environment variable {name!r}. "

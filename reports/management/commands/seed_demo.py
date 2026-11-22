@@ -229,10 +229,20 @@ class Command(BaseCommand):
     # ---- password + reset -----------------------------------------------------------------
 
     def generate_password(self):
+        """Create a random demo password and store it in .env (never printed).
+
+        An existing empty `DEMO_USER_PASSWORD=` line (as copied from .env.example) is
+        filled in place; otherwise the setting is appended.
+        """
         password = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(16))
         env_path = settings.BASE_DIR / ".env"
-        with env_path.open("a", encoding="utf-8") as env_file:
-            env_file.write(f"\n# Demo accounts created by seed_demo\nDEMO_USER_PASSWORD={password}\n")
+        lines = env_path.read_text(encoding="utf-8").splitlines() if env_path.exists() else []
+        empty_line = next((i for i, line in enumerate(lines) if line.strip() == "DEMO_USER_PASSWORD="), None)
+        if empty_line is not None:
+            lines[empty_line] = f"DEMO_USER_PASSWORD={password}"
+        else:
+            lines += ["", "# Demo accounts created by seed_demo", f"DEMO_USER_PASSWORD={password}"]
+        env_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         os.environ["DEMO_USER_PASSWORD"] = password
         self.stdout.write("Generated a demo password and saved it as DEMO_USER_PASSWORD in .env.")
         return password

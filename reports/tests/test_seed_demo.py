@@ -111,3 +111,20 @@ class SeedDemoCommandTests(TestCase):
         self.assertNotIn(password, output)
         self.assertIn("saved it as DEMO_USER_PASSWORD in .env", output)
         self.assertTrue(User.objects.get(username="demo_admin").check_password(password))
+
+    def test_empty_password_line_from_env_example_is_filled_in_place(self):
+        import os
+        import re
+        from unittest import mock
+
+        with tempfile.TemporaryDirectory() as base, mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("DEMO_USER_PASSWORD", None)
+            Path(base, ".env").write_text("SECRET_KEY='x'\nDEMO_USER_PASSWORD=\nDB_PORT=3306\n", encoding="utf-8")
+            with self.settings(BASE_DIR=Path(base)):
+                self.run_command()
+            lines = Path(base, ".env").read_text(encoding="utf-8").splitlines()
+        demo_lines = [line for line in lines if line.startswith("DEMO_USER_PASSWORD=")]
+        self.assertEqual(len(demo_lines), 1, lines)               # no duplicate appended
+        self.assertRegex(demo_lines[0], r"^DEMO_USER_PASSWORD=[A-Za-z0-9]{16}$")
+        self.assertEqual(lines[0], "SECRET_KEY='x'")              # other settings untouched
+        self.assertEqual(lines[-1], "DB_PORT=3306")

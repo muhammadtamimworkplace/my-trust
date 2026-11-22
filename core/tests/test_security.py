@@ -1,7 +1,7 @@
 """Security settings and the HTTP behaviour they produce (P11-T01)."""
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
+from django.test import Client, SimpleTestCase, TestCase
 
 from reports.tests.helpers import VALID_REPORT_POST, TempMediaMixin, png_upload
 
@@ -67,3 +67,26 @@ class LoggingTests(TestCase):
     def test_app_loggers_are_configured(self):
         for app in ("reports", "dashboard", "feedback"):
             self.assertIn(app, settings.LOGGING["loggers"])
+
+
+class PlaceholderSecretTests(SimpleTestCase):
+    def run_check(self, **env):
+        import os
+        import subprocess
+        import sys
+
+        result = subprocess.run(
+            [sys.executable, "manage.py", "check"], cwd=settings.BASE_DIR,
+            env={**os.environ, **env}, capture_output=True, text=True, timeout=120,
+        )
+        return result.returncode, result.stdout + result.stderr
+
+    def test_site_refuses_to_start_with_the_example_secret_key(self):
+        code, output = self.run_check(SECRET_KEY="change-me")
+        self.assertNotEqual(code, 0)
+        self.assertIn("still has the placeholder value from .env.example", output)
+
+    def test_placeholder_database_password_is_refused_too(self):
+        code, output = self.run_check(DB_PASSWORD="change-me")
+        self.assertNotEqual(code, 0)
+        self.assertIn("'DB_PASSWORD' still has the placeholder value", output)
