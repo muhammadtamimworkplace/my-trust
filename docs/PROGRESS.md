@@ -127,7 +127,7 @@
 | P12 | T01 | README | ✅ 22 Nov (setup steps as actually performed; found + fixed placeholder-secret issue) | `docs: add README with setup instructions` |
 | P12 | T02 | System diagrams | ✅ 22 Nov (6 types, 9 Mermaid diagrams drawn from the real models/services; PNG export steps in docs/diagrams/README.md) | `docs: add system diagrams` |
 | P12 | T03 | Screenshots | ⬜ | |
-| P12 | T04 | Fresh-install rehearsal + v1.0.0 | ⬜ | |
+| P12 | T04 | Fresh-install rehearsal + v1.0.0 | 🔄 rehearsal ✅ 22 Nov (clean clone → install → .env → migrate → seed → 373 tests → server OK; found + fixed demo-password sync bug) · ⬜ `v1.0.0` tag after screenshots + manual tests | `fix: sync existing demo accounts…` |
 
 ## Thesis track
 

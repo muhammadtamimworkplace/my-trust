@@ -42,7 +42,7 @@ unverified reports never change it, and no label ever says "fraud". Formula: `do
 | Frontend | HTML5, CSS3, Bootstrap 5.3, Bootstrap Icons, minimal JavaScript |
 | Images | Pillow (upload content verification) |
 | Configuration | python-dotenv (`.env` file) |
-| Testing | Django test runner (373 tests), coverage.py |
+| Testing | Django test runner (375 tests), coverage.py |
 
 ## Requirements
 
@@ -142,7 +142,7 @@ Port 8001 is used because 8000 may already be taken by another local project.
 ## Testing
 
 ```powershell
-python manage.py test                        # 373 tests, about 15 seconds
+python manage.py test                        # 375 tests, about 15 seconds
 pip install -r requirements-dev.txt          # once, for coverage
 python -m coverage run manage.py test
 python -m coverage report                    # 99.5 % line + branch coverage
