@@ -10,11 +10,12 @@ from accounts.decorators import admin_required
 from reports.models import ScamReport
 
 from .forms import ReviewForm
-from .services import decide_report, overview_stats, report_queue, search_users, toggle_user_active
+from .services import admin_pages, decide_report, overview_stats, report_queue, search_users, toggle_user_active
 
 User = get_user_model()
 REPORTS_PER_PAGE = 15
 USERS_PER_PAGE = 20
+PAGES_PER_PAGE = 20
 
 
 @admin_required
@@ -86,3 +87,12 @@ def user_toggle_active(request, pk):
     if url_has_allowed_host_and_scheme(next_url, {request.get_host()}):
         return redirect(next_url)
     return redirect("dashboard:user_list")
+
+
+@admin_required
+def page_list(request):
+    """All Facebook pages with report counts (including pages hidden from the public)."""
+    query = request.GET.get("q", "").strip()
+    page_obj = Paginator(admin_pages(query), PAGES_PER_PAGE).get_page(request.GET.get("page"))
+    context = {"section": "pages", "page_obj": page_obj, "q": query, "query_string": urlencode({"q": query}) if query else ""}
+    return render(request, "dashboard/page_list.html", context)

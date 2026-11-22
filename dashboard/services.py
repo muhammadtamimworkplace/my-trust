@@ -180,3 +180,26 @@ def toggle_user_active(*, admin, target):
             action_type=AdminAction.ActionType.ACTIVATE_USER if target.is_active else AdminAction.ActionType.DEACTIVATE_USER,
         )
     return target.is_active
+
+
+def admin_pages(query=""):
+    """Every Facebook page (including those hidden from the public) with report counts.
+
+    Unlike the public search, rejected-only pages are listed. `distinct=True` keeps the
+    counts correct when reports and feedback are joined together.
+    """
+    pages = (
+        FacebookPage.objects.select_related("trust")
+        .annotate(
+            total_reports=Count("reports", distinct=True),
+            verified_reports=Count("reports", filter=Q(reports__status=S.APPROVED), distinct=True),
+            review_reports=Count("reports", filter=Q(reports__status__in=[S.PENDING, S.NEEDS_EVIDENCE]), distinct=True),
+            rejected_reports=Count("reports", filter=Q(reports__status=S.REJECTED), distinct=True),
+            feedback_count=Count("feedback", distinct=True),
+        )
+        .order_by("-total_reports", "name")
+    )
+    query = (query or "").strip()
+    if query:
+        pages = pages.filter(Q(name__icontains=query) | Q(url__icontains=query))
+    return pages
