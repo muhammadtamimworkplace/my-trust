@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.http import require_POST
@@ -10,12 +11,23 @@ from accounts.decorators import admin_required
 from reports.models import ScamReport
 
 from .forms import ReviewForm
-from .services import admin_pages, decide_report, overview_stats, report_queue, search_users, toggle_user_active
+from .services import (
+    MODERATED_KINDS,
+    admin_pages,
+    decide_report,
+    moderation_items,
+    overview_stats,
+    report_queue,
+    search_users,
+    toggle_content_hidden,
+    toggle_user_active,
+)
 
 User = get_user_model()
 REPORTS_PER_PAGE = 15
 USERS_PER_PAGE = 20
 PAGES_PER_PAGE = 20
+MODERATION_PER_PAGE = 20
 
 
 @admin_required
@@ -96,3 +108,28 @@ def page_list(request):
     page_obj = Paginator(admin_pages(query), PAGES_PER_PAGE).get_page(request.GET.get("page"))
     context = {"section": "pages", "page_obj": page_obj, "q": query, "query_string": urlencode({"q": query}) if query else ""}
     return render(request, "dashboard/page_list.html", context)
+
+
+@admin_required
+def moderation(request):
+    """Feedback and comments with a hide/restore button."""
+    kind = "comment" if request.GET.get("type") == "comment" else "feedback"
+    page_obj = Paginator(moderation_items(kind), MODERATION_PER_PAGE).get_page(request.GET.get("page"))
+    context = {"section": "moderation", "kind": kind, "page_obj": page_obj, "query_string": f"type={kind}"}
+    return render(request, "dashboard/moderation.html", context)
+
+
+@admin_required
+@require_POST
+def moderation_toggle(request, kind, pk):
+    if kind not in MODERATED_KINDS:
+        raise Http404("Unknown content type.")
+    try:
+        hidden = toggle_content_hidden(admin=request.user, kind=kind, pk=pk)
+    except ObjectDoesNotExist:
+        raise Http404("Content not found.")
+    messages.success(request, f"The {kind} is now {'hidden' if hidden else 'visible again'}.")
+    next_url = request.POST.get("next", "")
+    if url_has_allowed_host_and_scheme(next_url, {request.get_host()}):
+        return redirect(next_url)
+    return redirect("dashboard:moderation")

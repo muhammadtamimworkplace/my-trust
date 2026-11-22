@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P9-T06** · Branch: `feature/p9-dashboard` (Phases 3–8 merged, latest `699de3b`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P9-T07** · Branch: `feature/p9-dashboard` (Phases 3–8 merged, latest `699de3b`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -115,7 +115,7 @@
 | P9 | T03 | Review decisions | ✅ 22 Nov (17 tests; atomic; audit log; score refresh; own-report + evidence-cap rules) | `feat: implement report moderation decisions` |
 | P9 | T04 | User management | ✅ 22 Nov (13 tests; not self/superuser; audit log; sessions invalidated) | `feat: add user management` |
 | P9 | T05 | Reported pages overview | ✅ 22 Nov (7 tests; includes pages hidden from public; correct joined counts) | `feat: add reported pages overview` |
-| P9 | T06 | (S) Content moderation | ⬜ | |
+| P9 | T06 | (S) Content moderation | ✅ 22 Nov (10 tests; hide/restore; audit log; trust recalculated) | `feat: add content moderation` |
 | P9 | T07 | (S) Activity log | ⬜ | |
 | P9 | T08 | Dashboard tests | ⬜ | |
 | P10 | T01 | Components & responsive pass | ⬜ | |

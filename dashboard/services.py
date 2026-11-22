@@ -203,3 +203,39 @@ def admin_pages(query=""):
     if query:
         pages = pages.filter(Q(name__icontains=query) | Q(url__icontains=query))
     return pages
+
+
+MODERATED_KINDS = {
+    # kind -> (model, hide action, restore action, audit target type)
+    "feedback": (Feedback, AdminAction.ActionType.HIDE_FEEDBACK, AdminAction.ActionType.UNHIDE_FEEDBACK, AdminAction.TargetType.FEEDBACK),
+    "comment": (Comment, AdminAction.ActionType.HIDE_COMMENT, AdminAction.ActionType.UNHIDE_COMMENT, AdminAction.TargetType.COMMENT),
+}
+
+
+def moderation_items(kind):
+    """Feedback or comments, newest first, for the moderation list."""
+    if kind == "comment":
+        return Comment.objects.select_related("user", "report__page").order_by("-created_at")
+    return Feedback.objects.select_related("user", "page").order_by("-created_at")
+
+
+def toggle_content_hidden(*, admin, kind, pk):
+    """Hide or restore one feedback/comment, log it, and refresh the page's trust score
+    when feedback changes (hidden feedback does not count). Returns the new `is_hidden`.
+    """
+    if kind not in MODERATED_KINDS:
+        raise ValidationError("Unknown content type.")
+    model, hide_action, restore_action, target_type = MODERATED_KINDS[kind]
+
+    with transaction.atomic():
+        item = model.objects.select_for_update().select_related("user").get(pk=pk)
+        item.is_hidden = not item.is_hidden
+        item.save(update_fields=["is_hidden"])
+        AdminAction.objects.create(
+            admin=admin, action_type=hide_action if item.is_hidden else restore_action,
+            target_user=item.user, target_type=target_type, target_id=item.pk,
+            report=item.report if kind == "comment" else None,
+        )
+        if kind == "feedback":
+            recalculate_trust(item.page)
+    return item.is_hidden
