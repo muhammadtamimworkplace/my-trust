@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P12-T02** · Branch: `feature/p12-delivery` (Phases 3–11 merged, latest `533ff06`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P12-T03** · Branch: `feature/p12-delivery` (Phases 3–11 merged, latest `533ff06`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -125,7 +125,7 @@
 | P11 | T02 | Full test run & fixes | ✅ 22 Nov: 370 tests OK in ~12 s; coverage 98.8% → 99.5% (branch); 1 bug fixed (seed reset ProtectedError); dead stubs removed | `chore: add coverage…`, `fix: let seed_demo reset…`, `test: cover…`, `refactor: remove unused…` |
 | P11 | T03 | Manual test case document | ✅ prepared 22 Nov: 51 manual cases (all "Not run" until performed) + real automated summary (370 tests, 99.5%) in `docs/testing/test-cases.md` | `docs: add manual test cases and results` |
 | P12 | T01 | README | ✅ 22 Nov (setup steps as actually performed; found + fixed placeholder-secret issue) | `docs: add README with setup instructions` |
-| P12 | T02 | System diagrams | ⬜ | |
+| P12 | T02 | System diagrams | ✅ 22 Nov (6 types, 9 Mermaid diagrams drawn from the real models/services; PNG export steps in docs/diagrams/README.md) | `docs: add system diagrams` |
 | P12 | T03 | Screenshots | ⬜ | |
 | P12 | T04 | Fresh-install rehearsal + v1.0.0 | ⬜ | |
 
