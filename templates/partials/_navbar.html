@@ -44,7 +44,7 @@
         {% if user.is_authenticated %}
           {% if user.is_platform_admin %}
             <li class="nav-item">
-              <a class="nav-link disabled" aria-disabled="true"><i class="bi bi-speedometer2 me-1" aria-hidden="true"></i>Dashboard</a> {# placeholder until P9-T01 #}
+              <a class="nav-link" href="{% url 'dashboard:overview' %}"><i class="bi bi-speedometer2 me-1" aria-hidden="true"></i>Dashboard</a>
             </li>
           {% endif %}
           <li class="nav-item">

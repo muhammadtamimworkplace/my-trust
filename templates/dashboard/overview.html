@@ -1,0 +1,74 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Overview{% endblock %}
+
+{% block dashboard_content %}
+<h1 class="h3 fw-bold mb-3">Overview</h1>
+
+{% if awaiting_review %}
+  <div class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center gap-2" role="status">
+    <span><i class="bi bi-inbox me-1" aria-hidden="true"></i><strong>{{ awaiting_review }}</strong> report{{ awaiting_review|pluralize }} waiting for review.</span>
+  </div>
+{% endif %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md"><div class="mt-card p-3 text-center"><div class="fs-3 fw-bold">{{ totals.users }}</div><div class="small text-secondary"><i class="bi bi-people me-1" aria-hidden="true"></i>Users</div></div></div>
+  <div class="col-6 col-md"><div class="mt-card p-3 text-center"><div class="fs-3 fw-bold">{{ totals.pages }}</div><div class="small text-secondary"><i class="bi bi-facebook me-1" aria-hidden="true"></i>Pages</div></div></div>
+  <div class="col-6 col-md"><div class="mt-card p-3 text-center"><div class="fs-3 fw-bold">{{ totals.reports }}</div><div class="small text-secondary"><i class="bi bi-flag me-1" aria-hidden="true"></i>Reports</div></div></div>
+  <div class="col-6 col-md"><div class="mt-card p-3 text-center"><div class="fs-3 fw-bold">{{ totals.feedback }}</div><div class="small text-secondary"><i class="bi bi-hand-thumbs-up me-1" aria-hidden="true"></i>Feedback</div></div></div>
+  <div class="col-6 col-md"><div class="mt-card p-3 text-center"><div class="fs-3 fw-bold">{{ totals.comments }}</div><div class="small text-secondary"><i class="bi bi-chat-left-text me-1" aria-hidden="true"></i>Comments</div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+  <section class="col-xl-5" aria-labelledby="status-heading">
+    <div class="mt-card p-4 h-100">
+      <h2 id="status-heading" class="h6 fw-bold mb-3">Reports by status</h2>
+      {% for row in status_rows %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between small"><span>{{ row.label }}</span><strong>{{ row.total }}</strong></div>
+          <progress class="mt-progress" value="{{ row.percent }}" max="100" aria-label="{{ row.label }}">{{ row.percent }}%</progress>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="col-xl-7" aria-labelledby="category-heading">
+    <div class="mt-card p-4 h-100">
+      <h2 id="category-heading" class="h6 fw-bold mb-1">Reports by scam category</h2>
+      <p class="small text-secondary">Patterns across all submitted reports; the second number is how many were verified.</p>
+      {% for row in category_rows %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between small">
+            <span>{{ row.label }}</span>
+            <span><strong>{{ row.total }}</strong> <span class="text-secondary">({{ row.verified }} verified)</span></span>
+          </div>
+          <progress class="mt-progress" value="{{ row.percent }}" max="100" aria-label="{{ row.label }}">{{ row.percent }}%</progress>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<section class="mt-card p-4" aria-labelledby="top-heading">
+  <h2 id="top-heading" class="h6 fw-bold mb-3">Most reported pages</h2>
+  {% if top_pages %}
+    <div class="table-responsive">
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th scope="col">Page</th><th scope="col" class="text-end">Public reports</th><th scope="col" class="text-end">Verified</th><th scope="col">Trust</th></tr></thead>
+        <tbody>
+          {% for page in top_pages %}
+            <tr>
+              <td><a href="{% url 'reports:page_detail' page.pk %}">{{ page.name }}</a></td>
+              <td class="text-end">{{ page.public_reports }}</td>
+              <td class="text-end">{{ page.verified_reports }}</td>
+              <td>{% include "partials/_trust_badge.html" with trust=page.trust compact=True %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="small text-secondary mb-0">No reports yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

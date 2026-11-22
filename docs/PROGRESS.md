@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P9-T01** · Branch: `feature/p8-feedback` (Phases 3–7 merged, latest `05f27f7`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P9-T02** · Branch: `feature/p9-dashboard` (Phases 3–8 merged, latest `699de3b`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -110,7 +110,7 @@
 | P8 | T04 | (S) Feedback voting | ✅ 22 Nov (10 tests; toggle; no own/hidden votes; no score effect) | `feat: add feedback voting` |
 | P8 | T05 | (S) Community activity | ✅ 22 Nov (4 tests; verified reports + visible feedback only) | `feat: show recent community activity` |
 | P8 | T06 | Feedback tests | ✅ 22 Nov: covered by tests written in T01–T05; no separate commit | — |
-| P9 | T01 | Dashboard overview stats | ⬜ | |
+| P9 | T01 | Dashboard overview stats | ✅ 22 Nov (12 tests; by status + by category; no date grouping in DB) | `feat: add admin dashboard overview` |
 | P9 | T02 | Report review queue | ⬜ | |
 | P9 | T03 | Review decisions | ⬜ | |
 | P9 | T04 | User management | ⬜ | |
