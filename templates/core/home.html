@@ -57,6 +57,47 @@
     </ol>
   </section>
 
+  {% if recent_verified_reports or recent_feedback %}
+    <section class="mb-5" aria-labelledby="activity-heading">
+      <h2 id="activity-heading" class="h3 fw-bold text-center mb-4">Recent community activity</h2>
+      <div class="row g-4">
+        {% if recent_verified_reports %}
+          <div class="col-lg-6">
+            <div class="mt-card p-4 h-100">
+              <h3 class="h6 fw-bold"><i class="bi bi-patch-check text-success me-1" aria-hidden="true"></i>Latest verified reports</h3>
+              <ul class="list-unstyled mb-0">
+                {% for report in recent_verified_reports %}
+                  <li class="py-2 border-bottom">
+                    <a class="fw-semibold text-decoration-none" href="{% url 'reports:report_detail' report.pk %}">{{ report.title }}</a>
+                    <div class="small text-secondary">{{ report.page.name }} · {{ report.get_category_display }} · {{ report.created_at|date:"j M Y" }}</div>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+        {% if recent_feedback %}
+          <div class="col-lg-6">
+            <div class="mt-card p-4 h-100">
+              <h3 class="h6 fw-bold"><i class="bi bi-people me-1" aria-hidden="true"></i>Latest community feedback</h3>
+              <ul class="list-unstyled mb-0">
+                {% for item in recent_feedback %}
+                  <li class="py-2 border-bottom small">
+                    <span aria-hidden="true">{% if item.sentiment == "POSITIVE" %}👍{% else %}👎{% endif %}</span>
+                    <span class="visually-hidden">{{ item.get_sentiment_display }} feedback</span>
+                    <span class="fw-semibold">{{ item.user.username }}</span> on
+                    <a href="{% url 'reports:page_detail' item.page.pk %}">{{ item.page.name }}</a>
+                    <span class="text-secondary">· {{ item.created_at|date:"j M Y" }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
   <section class="mb-5" aria-labelledby="categories-heading">
     <h2 id="categories-heading" class="h3 fw-bold text-center mb-2">Common scam patterns</h2>
     <p class="text-center text-secondary mb-4">The types of fraud reported on Facebook-based sales pages.</p>
