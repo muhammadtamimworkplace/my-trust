@@ -80,3 +80,29 @@ class RecentActivityTests(TestCase):
             ScamReport.objects.create(page=self.page, reporter=self.user, category="OTHER", status="APPROVED",
                                       title=f"Extra verified {i}", description="A description that is long enough.")
         self.assertEqual(len(self.client.get("/").context["recent_verified_reports"]), 3)
+
+
+class StaticPagesTests(TestCase):
+    def test_about_page_explains_labels_privacy_and_limitations(self):
+        response = self.client.get(reverse("core:about"))
+        self.assertEqual(response.status_code, 200)
+        for text in ("Verified by admin", "Unverified allegation", "Privacy", "Limitations",
+                     "does not connect to or collect data from Facebook", "not a legal judgement"):
+            self.assertContains(response, text)
+
+    def test_contact_page_without_configured_email_shows_no_address(self):
+        with self.settings(CONTACT_EMAIL=""):
+            response = self.client.get(reverse("core:contact"))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "mailto:")
+        self.assertContains(response, reverse("reports:report_create"))
+
+    def test_contact_page_shows_configured_email(self):
+        with self.settings(CONTACT_EMAIL="help@mytrust.test"):
+            self.assertContains(self.client.get(reverse("core:contact")), 'href="mailto:help@mytrust.test"')
+
+    def test_footer_links_are_real(self):
+        response = self.client.get(reverse("core:home"))
+        for name in ("core:about", "core:contact", "reports:page_list"):
+            self.assertContains(response, f'href="{reverse(name)}"')
+        self.assertNotContains(response, 'aria-disabled="true"')

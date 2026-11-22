@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}About · My Trust{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <article class="mt-card p-4 p-md-5">
+        <h1 class="h3 fw-bold">About My Trust</h1>
+        <p class="lead">
+          My Trust helps buyers check Facebook-based online sellers before paying, by collecting community reports,
+          administrator-verified findings and feedback in one place.
+        </p>
+
+        <h2 class="h5 fw-bold mt-4">Why it exists</h2>
+        <p>
+          Many small businesses sell through Facebook pages. Most are honest, but buyers also meet advance-payment
+          scams, parcels that never arrive, fake products, pages impersonating known brands, and harassment after a
+          complaint. These experiences are usually shared only in private chats, so the next buyer cannot learn from them.
+        </p>
+
+        <h2 class="h5 fw-bold mt-4">How it works</h2>
+        <ol>
+          <li><strong>Report.</strong> A registered user reports a page with a description and screenshot evidence.</li>
+          <li><strong>Review.</strong> An administrator examines the evidence and approves, rejects or asks for more.</li>
+          <li><strong>Evaluate.</strong> Each page shows a trust score built from verified reports and community feedback.</li>
+        </ol>
+
+        <h2 class="h5 fw-bold mt-4">How to read the information</h2>
+        <dl class="row">
+          <dt class="col-sm-4"><span class="badge text-bg-success">Verified by admin</span></dt>
+          <dd class="col-sm-8">An administrator reviewed the evidence and confirmed the report.</dd>
+          <dt class="col-sm-4"><span class="badge text-bg-warning">Unverified allegation</span></dt>
+          <dd class="col-sm-8">Submitted by a user and not yet confirmed. It never changes the trust score.</dd>
+          <dt class="col-sm-4"><span class="badge text-bg-secondary">Community feedback</span></dt>
+          <dd class="col-sm-8">Opinions from registered users, shown separately from verified findings.</dd>
+        </dl>
+
+        <h2 class="h5 fw-bold mt-4">Privacy</h2>
+        <p>
+          Evidence screenshots are visible only to the person who reported and to administrators. People are shown
+          by username only; email addresses are never displayed publicly.
+        </p>
+
+        <h2 class="h5 fw-bold mt-4">Limitations</h2>
+        <ul>
+          <li>All information is submitted by users. My Trust does not connect to or collect data from Facebook.</li>
+          <li>Administrator verification is a review of the evidence provided, not a legal judgement.</li>
+          <li>A page without reports is not necessarily safe. Be careful with advance payments to any seller.</li>
+          <li>The trust score is a transparent rule-based indicator, not a prediction.</li>
+        </ul>
+
+        <p class="small text-secondary mb-0 mt-4">
+          My Trust is an undergraduate Software Engineering thesis project:
+          <em>Identification of Scam Patterns in Facebook-Based Online Sales Pages</em>.
+        </p>
+      </article>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 
 from feedback.models import Feedback
@@ -45,3 +46,13 @@ def recent_activity():
 def home(request):
     """Public landing page: hero with search, how it works, community activity, scam categories."""
     return render(request, "core/home.html", {"scam_categories": SCAM_CATEGORIES, **recent_activity()})
+
+
+def about(request):
+    """What My Trust is, how it works, and its limitations."""
+    return render(request, "core/about.html")
+
+
+def contact(request):
+    """How to get help. CONTACT_EMAIL is optional (set it in .env); no address is invented."""
+    return render(request, "core/contact.html", {"contact_email": settings.CONTACT_EMAIL})

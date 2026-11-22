@@ -195,6 +195,9 @@ MESSAGE_TAGS = {message_constants.ERROR: 'danger'}
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Optional public contact address shown on /contact/ (blank = not shown).
+CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', '').strip()
+
 # Evidence upload limits (core/validators.py, reports forms).
 EVIDENCE_MAX_BYTES = 5 * 1024 * 1024   # 5 MB per file
 EVIDENCE_MAX_FILES = 5                 # per report

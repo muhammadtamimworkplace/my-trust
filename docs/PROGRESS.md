@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P10-T02** · Branch: `feature/p10-polish` (Phases 3–9 merged, latest `4431bcd`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P10-T03** · Branch: `feature/p10-polish` (Phases 3–9 merged, latest `4431bcd`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -119,7 +119,7 @@
 | P9 | T07 | (S) Activity log | ✅ 22 Nov (5 tests; read-only; filter by action) | `feat: add admin activity log` |
 | P9 | T08 | Dashboard tests | ✅ 22 Nov (7 tests; auto-discovered route matrix; mutation-checked) | `test: add dashboard access and moderation tests` |
 | P10 | T01 | Components & responsive pass | ✅ 22 Nov (9-rule template audit test; dashboard menu scrolls on phones; visual check by you pending) | `style: unify components and improve responsive layout` |
-| P10 | T02 | About & contact | ⬜ | |
+| P10 | T02 | About & contact | ✅ 22 Nov (4 tests; optional CONTACT_EMAIL, no invented address) | `feat: add about and contact pages` |
 | P10 | T03 | Error pages | ⬜ | |
 | P11 | T01 | Security settings | ⬜ | |
 | P11 | T02 | Full test run & fixes | ⬜ | |
