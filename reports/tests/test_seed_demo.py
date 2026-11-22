@@ -80,3 +80,34 @@ class SeedDemoCommandTests(TestCase):
         self.assertEqual(list(FacebookPage.objects.all()), [real_page])
         self.assertEqual(ScamReport.objects.count() + Evidence.objects.count() + AdminAction.objects.count(), 0)
         self.assertFalse(any(f.exists() for f in stored_files))
+
+    def test_reset_works_when_a_demo_user_reported_a_real_page(self):
+        """Regression: during demo rehearsals a demo account may report a real page.
+        That report used to block deleting the demo user (ProtectedError)."""
+        self.run_command("--password", TEST_PASSWORD)
+        real_page = FacebookPage.objects.create(name="Real Shop", url="facebook.com/real.shop")
+        ScamReport.objects.create(page=real_page, reporter=User.objects.get(username="demo_rina"), category="OTHER",
+                                  title="Rehearsal report title", description="Submitted while rehearsing the demo.")
+        self.run_command("--reset")
+        self.assertFalse(User.objects.filter(username__startswith="demo_").exists())
+        self.assertFalse(ScamReport.objects.exists())
+        self.assertEqual(list(FacebookPage.objects.all()), [real_page])  # real page itself is kept
+        from trustscore.models import TrustEvaluation
+        self.assertEqual(TrustEvaluation.objects.get(page=real_page).pending_report_count, 0)  # snapshot refreshed
+
+    def test_generated_password_is_saved_to_env_file_and_never_printed(self):
+        import os
+        import re
+        from unittest import mock
+
+        with tempfile.TemporaryDirectory() as base, mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("DEMO_USER_PASSWORD", None)  # force generation; real .env is untouched
+            with self.settings(BASE_DIR=Path(base)):
+                output = self.run_command()
+            env_text = Path(base, ".env").read_text(encoding="utf-8")
+        match = re.search(r"^DEMO_USER_PASSWORD=([A-Za-z0-9]{16})$", env_text, flags=re.M)
+        self.assertIsNotNone(match, env_text)
+        password = match.group(1)
+        self.assertNotIn(password, output)
+        self.assertIn("saved it as DEMO_USER_PASSWORD in .env", output)
+        self.assertTrue(User.objects.get(username="demo_admin").check_password(password))

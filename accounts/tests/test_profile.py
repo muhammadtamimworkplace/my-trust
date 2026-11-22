@@ -30,7 +30,7 @@ class ProfilePageTests(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
         self.assertNotContains(response, "someone@example.com")
-        self.assertNotContains(response, "pbkdf2_sha256")
+        self.assertNotContains(response, self.user.password)  # the stored hash, whatever the hasher
 
     def test_admin_role_is_labelled(self):
         self.user.role = User.Role.ADMIN

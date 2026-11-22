@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 User = get_user_model()
@@ -25,6 +25,7 @@ class RegistrationTests(TestCase):
         for name in ("username", "email", "password1", "password2"):
             self.assertContains(response, f'name="{name}"')
 
+    @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"])
     def test_valid_registration_creates_user_logs_in_and_redirects(self):
         response = self.post()
         self.assertRedirects(response, reverse("core:home"))
