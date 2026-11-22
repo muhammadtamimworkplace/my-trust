@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 from django.contrib.messages import constants as message_constants
@@ -206,3 +207,65 @@ EVIDENCE_MAX_FILES = 5                 # per report
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ---------------------------------------------------------------------------
+# Security hardening (P11-T01, guide §12.2). Reviewed with `manage.py check --deploy`;
+# see docs/security-review.md for the output and the warnings accepted locally.
+# ---------------------------------------------------------------------------
+
+# Cookies: not readable by JavaScript, not sent on cross-site requests.
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True          # no page script reads the CSRF cookie
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # one week
+
+# Browser protections (Django defaults, stated explicitly so they are documented).
+X_FRAME_OPTIONS = 'DENY'             # no clickjacking via <iframe>
+SECURE_CONTENT_TYPE_NOSNIFF = True   # browsers must not guess file types
+SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
+
+# HTTPS-only settings. Off for the local HTTP demo; set HTTPS=True in .env when the
+# site is served over HTTPS (e.g. a future cloud deployment).
+HTTPS = env_bool('HTTPS', default=False)
+SESSION_COOKIE_SECURE = HTTPS
+CSRF_COOKIE_SECURE = HTTPS
+SECURE_SSL_REDIRECT = HTTPS
+SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30 if HTTPS else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = HTTPS
+
+# Request size limits. The report form allows 5 files and shows a friendly error up
+# to this hard limit; anything larger is refused outright (400 Bad Request).
+DATA_UPLOAD_MAX_NUMBER_FILES = 10
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 200
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024      # non-file form data
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024      # larger uploads stream to a temp file
+
+# Passwords: PBKDF2 (Django default) in the application. Tests switch to a fast
+# hasher only so the suite runs quickly; tests that check real hashing pin PBKDF2.
+PRODUCTION_PASSWORD_HASHERS = ['django.contrib.auth.hashers.PBKDF2PasswordHasher']
+RUNNING_TESTS = len(sys.argv) > 1 and sys.argv[1] == 'test'
+PASSWORD_HASHERS = (
+    ['django.contrib.auth.hashers.MD5PasswordHasher'] if RUNNING_TESTS else PRODUCTION_PASSWORD_HASHERS
+)
+
+# Logging: errors and service messages go to the console (runserver window).
+# No passwords, tokens or evidence content are ever logged by the app.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {'format': '{asctime} {levelname} {name}: {message}', 'style': '{'},
+    },
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'simple'},
+    },
+    'loggers': {
+        'django': {'handlers': ['console'], 'level': 'WARNING'},
+        'django.request': {'handlers': ['console'], 'level': 'ERROR', 'propagate': False},
+        **{app: {'handlers': ['console'], 'level': 'INFO'}
+           for app in ('accounts', 'reports', 'feedback', 'trustscore', 'dashboard', 'core')},
+    },
+}

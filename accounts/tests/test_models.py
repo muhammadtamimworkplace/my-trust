@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 User = get_user_model()
 
@@ -15,6 +15,7 @@ class UserModelTests(TestCase):
         self.assertEqual(user.role, User.Role.USER)
         self.assertFalse(user.is_platform_admin)
 
+    @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"])
     def test_password_is_hashed_not_stored_in_plain_text(self):
         user = User.objects.create_user("bob", "bob@example.com", "S3cure-pass!")
         self.assertNotEqual(user.password, "S3cure-pass!")
