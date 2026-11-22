@@ -83,6 +83,12 @@
               {{ feedback_form.comment }}
               <button type="submit" class="btn btn-sm btn-accent mt-2">{% if my_feedback %}Update feedback{% else %}Submit feedback{% endif %}</button>
             </form>
+            {% if my_feedback %}
+              <form method="post" action="{% url 'feedback:feedback_delete' my_feedback.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-link text-danger px-0 mt-1">Delete my feedback</button>
+              </form>
+            {% endif %}
           {% else %}
             <p class="small mb-0">
               <a href="{% url 'accounts:login' %}?next={{ request.path }}">Log in</a> or

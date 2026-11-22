@@ -112,3 +112,61 @@ class FeedbackFormOnPageTests(TestCase):
         self.client.force_login(self.user)
         Feedback.objects.create(page=self.page, user=self.user, sentiment="NEGATIVE", is_hidden=True)
         self.assertContains(self.client.get(self.detail), "A moderator has hidden your feedback")
+
+
+class FeedbackDeleteTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.owner = User.objects.create_user("owner", "owner@example.com", "x")
+        cls.other = User.objects.create_user("other", "other@example.com", "x")
+        cls.page = FacebookPage.objects.create(name="Example Shop", url="facebook.com/example.shop")
+        ScamReport.objects.create(
+            page=cls.page, reporter=cls.owner, category="OTHER", status=ScamReport.Status.APPROVED,
+            title="A report title here", description="A description that is long enough to be valid.",
+        )
+        cls.detail = reverse("reports:page_detail", args=[cls.page.pk])
+
+    def setUp(self):
+        self.feedback = Feedback.objects.create(page=self.page, user=self.owner, sentiment="NEGATIVE", comment="Bad")
+        self.url = reverse("feedback:feedback_delete", args=[self.feedback.pk])
+
+    def test_owner_deletes_feedback_and_score_is_recalculated(self):
+        from trustscore.services import recalculate_trust
+
+        recalculate_trust(self.page)
+        self.assertEqual(TrustEvaluation.objects.get(page=self.page).negative_count, 1)
+        self.client.force_login(self.owner)
+        response = self.client.post(self.url, follow=True)
+        self.assertRedirects(response, self.detail)
+        self.assertContains(response, "Your feedback was deleted.")
+        self.assertEqual(Feedback.objects.count(), 0)
+        self.assertEqual(TrustEvaluation.objects.get(page=self.page).negative_count, 0)
+
+    def test_owner_can_delete_even_if_moderator_hid_it(self):
+        Feedback.objects.filter(pk=self.feedback.pk).update(is_hidden=True)
+        self.client.force_login(self.owner)
+        self.client.post(self.url)
+        self.assertEqual(Feedback.objects.count(), 0)
+
+    def test_other_users_get_404_and_nothing_is_deleted(self):
+        self.client.force_login(self.other)
+        self.assertEqual(self.client.post(self.url).status_code, 404)
+        self.assertEqual(Feedback.objects.count(), 1)
+
+    def test_requires_login_and_post(self):
+        self.assertEqual(self.client.post(self.url).status_code, 302)
+        self.client.force_login(self.owner)
+        self.assertEqual(self.client.get(self.url).status_code, 405)
+        self.assertEqual(Feedback.objects.count(), 1)
+
+    def test_csrf_is_enforced(self):
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.owner)
+        self.assertEqual(client.post(self.url).status_code, 403)
+        self.assertEqual(Feedback.objects.count(), 1)
+
+    def test_delete_button_only_for_own_existing_feedback(self):
+        self.client.force_login(self.owner)
+        self.assertContains(self.client.get(self.detail), "Delete my feedback")
+        self.client.force_login(self.other)
+        self.assertNotContains(self.client.get(self.detail), "Delete my feedback")

@@ -19,3 +19,11 @@ def save_feedback(*, user, page, sentiment, comment=""):
         )
         recalculate_trust(page)
     return feedback, created
+
+
+def delete_feedback(feedback):
+    """Delete a feedback entry (and its votes) and refresh the page's trust snapshot."""
+    page = feedback.page
+    with transaction.atomic():
+        feedback.delete()
+        recalculate_trust(page)
