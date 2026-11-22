@@ -122,7 +122,7 @@
 | P10 | T02 | About & contact | ✅ 22 Nov (4 tests; optional CONTACT_EMAIL, no invented address) | `feat: add about and contact pages` |
 | P10 | T03 | Error pages | ✅ 22 Nov (5 tests; 403, 404, 500, CSRF; no technical details) | `feat: add custom error pages` |
 | P11 | T01 | Security settings | ✅ 22 Nov (7 tests; check --deploy reviewed in docs/security-review.md; test suite 130s → 11s) | `chore: harden security settings` |
-| P11 | T02 | Full test run & fixes | ⬜ | |
+| P11 | T02 | Full test run & fixes | 🔄 coverage 98.8% (branch); fixes in progress | |
 | P11 | T03 | Manual test case document | ⬜ | |
 | P12 | T01 | README | ⬜ | |
 | P12 | T02 | System diagrams | ⬜ | |
