@@ -16,7 +16,9 @@
             <a class="nav-link{% if section == 'queue' %} active{% endif %}" href="{% url 'dashboard:report_queue' %}"><i class="bi bi-inbox me-2" aria-hidden="true"></i>Review queue</a>
           </li>
           <li class="nav-item"><a class="nav-link disabled" aria-disabled="true"><i class="bi bi-facebook me-2" aria-hidden="true"></i>Reported pages</a></li>
-          <li class="nav-item"><a class="nav-link disabled" aria-disabled="true"><i class="bi bi-people me-2" aria-hidden="true"></i>Users</a></li>
+          <li class="nav-item">
+            <a class="nav-link{% if section == 'users' %} active{% endif %}" href="{% url 'dashboard:user_list' %}"><i class="bi bi-people me-2" aria-hidden="true"></i>Users</a>
+          </li>
           <li class="nav-item"><a class="nav-link disabled" aria-disabled="true"><i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>Moderation</a></li>
           <li class="nav-item"><a class="nav-link disabled" aria-disabled="true"><i class="bi bi-journal-text me-2" aria-hidden="true"></i>Activity log</a></li>
         </ul>

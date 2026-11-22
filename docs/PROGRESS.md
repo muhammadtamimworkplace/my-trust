@@ -1,7 +1,7 @@
 # My Trust — Progress Tracker
 
 > Updated after every verified task. Status: ⬜ pending · 🔄 in progress · ✅ done · ⛔ blocked · ✂️ dropped (deadline)
-> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P9-T04** · Branch: `feature/p9-dashboard` (Phases 3–8 merged, latest `699de3b`)
+> Last updated: 22 Nov 2026 · Phases 1–2 merged to `main` (`dfa90ea`, `86f1ae3`) · Next task: **P9-T05** · Branch: `feature/p9-dashboard` (Phases 3–8 merged, latest `699de3b`)
 
 ## Development environment (verified in P1-T01, 22 Nov 2026)
 
@@ -113,7 +113,7 @@
 | P9 | T01 | Dashboard overview stats | ✅ 22 Nov (12 tests; by status + by category; no date grouping in DB) | `feat: add admin dashboard overview` |
 | P9 | T02 | Report review queue | ✅ 22 Nov (8 tests; tabs with counts; oldest pending first) | `feat: add report review queue` |
 | P9 | T03 | Review decisions | ✅ 22 Nov (17 tests; atomic; audit log; score refresh; own-report + evidence-cap rules) | `feat: implement report moderation decisions` |
-| P9 | T04 | User management | ⬜ | |
+| P9 | T04 | User management | ✅ 22 Nov (13 tests; not self/superuser; audit log; sessions invalidated) | `feat: add user management` |
 | P9 | T05 | Reported pages overview | ⬜ | |
 | P9 | T06 | (S) Content moderation | ⬜ | |
 | P9 | T07 | (S) Activity log | ⬜ | |

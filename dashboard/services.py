@@ -143,3 +143,40 @@ def decide_report(*, admin, report, decision, note=""):
         AdminAction.objects.create(admin=admin, action_type=action_type, report=report, note=note)
         recalculate_trust(report.page)
     return report
+
+
+def search_users(query=""):
+    """Users for the management list, newest first, with their report counts.
+
+    `query` matches username, email, first or last name (case-insensitive, partial).
+    """
+    users = User.objects.annotate(report_count=Count("reports")).order_by("-date_joined", "-pk")
+    query = (query or "").strip()
+    if query:
+        users = users.filter(
+            Q(username__icontains=query) | Q(email__icontains=query)
+            | Q(first_name__icontains=query) | Q(last_name__icontains=query)
+        )
+    return users
+
+
+def toggle_user_active(*, admin, target):
+    """Activate or deactivate an account and log it. Returns the new `is_active` value.
+
+    Refused for yourself (you would lock yourself out) and for superusers (managed
+    only through Django admin). A deactivated user cannot log in, and Django rejects
+    their existing sessions on the next request.
+    """
+    if target.pk == admin.pk:
+        raise ValidationError("You cannot deactivate your own account.")
+    if target.is_superuser:
+        raise ValidationError("Superuser accounts can only be changed in the Django admin.")
+
+    with transaction.atomic():
+        target.is_active = not target.is_active
+        target.save(update_fields=["is_active"])
+        AdminAction.objects.create(
+            admin=admin, target_user=target,
+            action_type=AdminAction.ActionType.ACTIVATE_USER if target.is_active else AdminAction.ActionType.DEACTIVATE_USER,
+        )
+    return target.is_active
