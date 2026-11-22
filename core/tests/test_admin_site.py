@@ -56,3 +56,20 @@ class AdminSiteTests(TestCase):
         self.assertEqual(response.status_code, 403)
         self.action.refresh_from_db()
         self.assertEqual(self.action.note, "")
+
+    def test_evidence_inline_lists_files_without_public_media_links(self):
+        import shutil
+        import tempfile
+
+        from reports.tests.helpers import png_upload
+
+        media = tempfile.mkdtemp(prefix="mytrust-admin-media-")
+        try:
+            with self.settings(MEDIA_ROOT=media):
+                evidence = Evidence.objects.create(report=self.report, file=png_upload("receipt.png"))
+                response = self.client.get(self.admin_url(ScamReport, "change", self.report.pk))
+        finally:
+            shutil.rmtree(media, ignore_errors=True)
+        self.assertContains(response, "receipt.png")
+        self.assertContains(response, evidence.file.name)     # shown as text ("stored as")
+        self.assertNotContains(response, f"/media/{evidence.file.name}")  # never a public link
