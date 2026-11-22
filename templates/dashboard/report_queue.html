@@ -1,0 +1,44 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Review queue{% endblock %}
+
+{% block dashboard_content %}
+<h1 class="h3 fw-bold mb-3">Review queue</h1>
+
+<ul class="nav nav-tabs mb-3" aria-label="Report status">
+  {% for value, label, count in tabs %}
+    <li class="nav-item">
+      <a class="nav-link{% if value == active_tab %} active{% endif %}" {% if value == active_tab %}aria-current="page"{% endif %}
+         href="?status={{ value }}">{{ label }} <span class="badge text-bg-secondary">{{ count }}</span></a>
+    </li>
+  {% endfor %}
+</ul>
+
+<div class="mt-card p-0">
+  {% if page_obj.object_list %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr><th scope="col">Report</th><th scope="col">Page</th><th scope="col">Category</th><th scope="col">Reporter</th><th scope="col">Submitted</th><th scope="col" class="text-center">Files</th><th scope="col">Status</th></tr>
+        </thead>
+        <tbody>
+          {% for report in page_obj.object_list %}
+            <tr>
+              <td><a class="fw-semibold text-decoration-none" href="{% url 'reports:report_detail' report.pk %}">{{ report.title }}</a></td>
+              <td>{{ report.page.name }}</td>
+              <td>{{ report.get_category_display }}</td>
+              <td>{{ report.reporter.username }}</td>
+              <td class="text-nowrap">{{ report.created_at|date:"j M Y" }}</td>
+              <td class="text-center">{{ report.evidence_count }}</td>
+              <td>{% include "partials/_status_badge.html" with report=report %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="p-4 mb-0 text-secondary">No reports in this tab.</p>
+  {% endif %}
+</div>
+{% include "partials/_pagination.html" %}
+{% endblock %}

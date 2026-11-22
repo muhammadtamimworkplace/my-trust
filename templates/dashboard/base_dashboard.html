@@ -12,7 +12,9 @@
           <li class="nav-item">
             <a class="nav-link{% if section == 'overview' %} active{% endif %}" href="{% url 'dashboard:overview' %}"><i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>Overview</a>
           </li>
-          <li class="nav-item"><a class="nav-link disabled" aria-disabled="true"><i class="bi bi-inbox me-2" aria-hidden="true"></i>Review queue</a></li>
+          <li class="nav-item">
+            <a class="nav-link{% if section == 'queue' %} active{% endif %}" href="{% url 'dashboard:report_queue' %}"><i class="bi bi-inbox me-2" aria-hidden="true"></i>Review queue</a>
+          </li>
           <li class="nav-item"><a class="nav-link disabled" aria-disabled="true"><i class="bi bi-facebook me-2" aria-hidden="true"></i>Reported pages</a></li>
           <li class="nav-item"><a class="nav-link disabled" aria-disabled="true"><i class="bi bi-people me-2" aria-hidden="true"></i>Users</a></li>
           <li class="nav-item"><a class="nav-link disabled" aria-disabled="true"><i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>Moderation</a></li>

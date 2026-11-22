@@ -65,3 +65,33 @@ def overview_stats():
         "category_rows": with_percent(category_rows, total_reports),
         "top_pages": top_pages,
     }
+
+
+QUEUE_TABS = [
+    ("PENDING", "Under review"),
+    ("NEEDS_EVIDENCE", "Needs evidence"),
+    ("APPROVED", "Verified"),
+    ("REJECTED", "Rejected"),
+    ("ALL", "All"),
+]
+DEFAULT_QUEUE_TAB = "PENDING"
+
+
+def report_queue(tab):
+    """Reports for one queue tab plus the count shown on every tab.
+
+    "Under review" is listed oldest first (first in, first out); other tabs newest first.
+    Returns (queryset, [(tab_value, label, count), ...], active_tab).
+    """
+    counts = dict(ScamReport.objects.values_list("status").annotate(n=Count("pk")))
+    counts["ALL"] = sum(counts.values())
+    tabs = [(value, label, counts.get(value, 0)) for value, label in QUEUE_TABS]
+
+    valid = {value for value, _ in QUEUE_TABS}
+    active = tab if tab in valid else DEFAULT_QUEUE_TAB
+
+    reports = ScamReport.objects.select_related("page", "reporter").annotate(evidence_count=Count("evidence"))
+    if active != "ALL":
+        reports = reports.filter(status=active)
+    reports = reports.order_by("created_at" if active == S.PENDING else "-created_at")
+    return reports, tabs, active
