@@ -1,0 +1,89 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Review: {{ report.title }}{% endblock %}
+
+{% block dashboard_content %}
+<a class="small d-inline-block mb-2" href="{% url 'dashboard:report_queue' %}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to queue</a>
+
+<div class="row g-4">
+  <div class="col-xl-7">
+    <article class="mt-card p-4 mb-4" aria-labelledby="review-title">
+      <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+        <span class="badge rounded-pill text-bg-light border">{{ report.get_category_display }}</span>
+        {% include "partials/_status_badge.html" with report=report %}
+      </div>
+      <h1 id="review-title" class="h4 fw-bold">{{ report.title }}</h1>
+      <p class="small text-secondary">
+        Reported by <strong>{{ report.reporter.username }}</strong> on {{ report.created_at|date:"j F Y, H:i" }}
+        {% if report.incident_date %}· incident {{ report.incident_date|date:"j F Y" }}{% endif %}
+        {% if report.amount_lost is not None %}· amount lost BDT {{ report.amount_lost }}{% endif %}
+      </p>
+      <div>{{ report.description|linebreaks }}</div>
+      <hr>
+      <div class="small">
+        <a class="fw-semibold" href="{% url 'reports:page_detail' report.page.pk %}">{{ report.page.name }}</a> ·
+        <a class="text-break" href="{{ report.page.url }}" target="_blank" rel="noopener noreferrer nofollow">{{ report.page.url }}</a>
+      </div>
+    </article>
+
+    <section class="mt-card p-4" aria-labelledby="evidence-heading">
+      <h2 id="evidence-heading" class="h6 fw-bold mb-3"><i class="bi bi-images me-1" aria-hidden="true"></i>Evidence ({{ evidence_list|length }})</h2>
+      <div class="row g-3">
+        {% for evidence in evidence_list %}
+          {% url 'reports:evidence_file' evidence.pk as evidence_url %}
+          <div class="col-6 col-md-4">
+            <a class="d-block mt-evidence-thumb" href="{{ evidence_url }}" target="_blank" rel="noopener">
+              <img src="{{ evidence_url }}" alt="Evidence: {{ evidence.original_name }}" loading="lazy" class="img-fluid rounded border">
+            </a>
+            <div class="small text-secondary text-truncate mt-1" title="{{ evidence.original_name }}">{{ evidence.original_name }}</div>
+          </div>
+        {% empty %}
+          <div class="col-12 small text-secondary">No files attached.</div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+
+  <div class="col-xl-5">
+    <section class="mt-card p-4 mb-4" aria-labelledby="decision-heading">
+      <h2 id="decision-heading" class="h6 fw-bold mb-3">Decision</h2>
+      {% if report.admin_note %}
+        <div class="alert alert-light border small">
+          <div class="fw-semibold">Current note{% if report.reviewed_at %} ({{ report.reviewed_at|date:"j M Y" }}){% endif %}</div>
+          {{ report.admin_note|linebreaksbr }}
+        </div>
+      {% endif %}
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger" role="alert">{% for error in form.non_field_errors %}{{ error }}{% endfor %}</div>
+        {% endif %}
+        <div class="mb-3" role="radiogroup" aria-label="Decision">
+          {% for radio in form.decision %}
+            <div class="form-check">
+              {{ radio.tag }}
+              <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+            </div>
+          {% endfor %}
+          {% for error in form.decision.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        </div>
+        {% include "partials/_form_field.html" with field=form.note %}
+        <button type="submit" class="btn btn-accent w-100">Save decision</button>
+      </form>
+    </section>
+
+    <section class="mt-card p-4" aria-labelledby="history-heading">
+      <h2 id="history-heading" class="h6 fw-bold mb-3">History</h2>
+      {% for action in history %}
+        <div class="small border-bottom pb-2 mb-2">
+          <div><strong>{{ action.get_action_type_display }}</strong> by {{ action.admin.username }}</div>
+          <div class="text-secondary">{{ action.created_at|date:"j M Y, H:i" }}</div>
+          {% if action.note %}<div>{{ action.note }}</div>{% endif %}
+        </div>
+      {% empty %}
+        <p class="small text-secondary mb-0">No decisions yet.</p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

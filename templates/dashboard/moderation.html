@@ -1,0 +1,58 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Moderation{% endblock %}
+
+{% block dashboard_content %}
+<h1 class="h3 fw-bold mb-3">Moderation</h1>
+
+<ul class="nav nav-tabs mb-3" aria-label="Content type">
+  <li class="nav-item"><a class="nav-link{% if kind == 'feedback' %} active{% endif %}" {% if kind == 'feedback' %}aria-current="page"{% endif %} href="?type=feedback">Feedback</a></li>
+  <li class="nav-item"><a class="nav-link{% if kind == 'comment' %} active{% endif %}" {% if kind == 'comment' %}aria-current="page"{% endif %} href="?type=comment">Comments</a></li>
+</ul>
+<p class="small text-secondary">Hidden content is removed from public pages{% if kind == "feedback" %} and no longer counts toward the trust score{% endif %}. You can restore it at any time.</p>
+
+<div class="mt-card p-0">
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead>
+        <tr>
+          <th scope="col">Author</th><th scope="col">{% if kind == "feedback" %}Page{% else %}Report{% endif %}</th>
+          {% if kind == "feedback" %}<th scope="col">Opinion</th>{% endif %}
+          <th scope="col">Text</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Action</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in page_obj.object_list %}
+          <tr>
+            <td class="fw-semibold">{{ item.user.username }}</td>
+            {% if kind == "feedback" %}
+              <td><a href="{% url 'reports:page_detail' item.page.pk %}">{{ item.page.name }}</a></td>
+              <td>{% if item.sentiment == "POSITIVE" %}<span aria-hidden="true">👍</span> Positive{% else %}<span aria-hidden="true">👎</span> Negative{% endif %}</td>
+              <td class="small text-break">{{ item.comment|default:"—"|truncatechars:140 }}</td>
+            {% else %}
+              <td><a href="{% url 'reports:report_detail' item.report.pk %}">{{ item.report.title|truncatechars:40 }}</a></td>
+              <td class="small text-break">{{ item.body|truncatechars:140 }}</td>
+            {% endif %}
+            <td class="text-nowrap small">{{ item.created_at|date:"j M Y" }}</td>
+            <td>{% if item.is_hidden %}<span class="badge text-bg-secondary">Hidden</span>{% else %}<span class="badge text-bg-success">Visible</span>{% endif %}</td>
+            <td class="text-end">
+              <form method="post" action="{% url 'dashboard:moderation_toggle' kind item.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                {% if item.is_hidden %}
+                  <button type="submit" class="btn btn-sm btn-outline-success">Restore</button>
+                {% else %}
+                  <button type="submit" class="btn btn-sm btn-outline-danger">Hide</button>
+                {% endif %}
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7" class="text-secondary p-4">Nothing here yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% include "partials/_pagination.html" %}
+{% endblock %}
