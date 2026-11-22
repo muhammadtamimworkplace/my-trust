@@ -239,3 +239,11 @@ def toggle_content_hidden(*, admin, kind, pk):
         if kind == "feedback":
             recalculate_trust(item.page)
     return item.is_hidden
+
+
+def activity_log(action_type=""):
+    """Audit-log entries, newest first, optionally filtered by action type."""
+    entries = AdminAction.objects.select_related("admin", "report", "target_user").order_by("-created_at", "-pk")
+    if action_type in AdminAction.ActionType.values:
+        entries = entries.filter(action_type=action_type)
+    return entries

@@ -11,8 +11,10 @@ from accounts.decorators import admin_required
 from reports.models import ScamReport
 
 from .forms import ReviewForm
+from .models import AdminAction
 from .services import (
     MODERATED_KINDS,
+    activity_log,
     admin_pages,
     decide_report,
     moderation_items,
@@ -28,6 +30,7 @@ REPORTS_PER_PAGE = 15
 USERS_PER_PAGE = 20
 PAGES_PER_PAGE = 20
 MODERATION_PER_PAGE = 20
+ACTIVITY_PER_PAGE = 25
 
 
 @admin_required
@@ -133,3 +136,18 @@ def moderation_toggle(request, kind, pk):
     if url_has_allowed_host_and_scheme(next_url, {request.get_host()}):
         return redirect(next_url)
     return redirect("dashboard:moderation")
+
+
+@admin_required
+def activity(request):
+    """Read-only audit log of administrator actions."""
+    action = request.GET.get("action", "")
+    if action not in AdminAction.ActionType.values:
+        action = ""
+    page_obj = Paginator(activity_log(action), ACTIVITY_PER_PAGE).get_page(request.GET.get("page"))
+    context = {
+        "section": "activity", "page_obj": page_obj, "action": action,
+        "action_choices": AdminAction.ActionType.choices,
+        "query_string": urlencode({"action": action}) if action else "",
+    }
+    return render(request, "dashboard/activity.html", context)
