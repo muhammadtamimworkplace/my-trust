@@ -7,9 +7,19 @@ from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import never_cache
 
+from feedback.forms import FeedbackForm
+from feedback.models import Feedback
+
 from .forms import AddEvidenceForm, PageSearchForm, ReportForm
 from .models import Evidence, FacebookPage, ScamReport
-from .services import add_requested_evidence, page_overview, reports_by_user, search_pages, submit_report
+from .services import (
+    add_requested_evidence,
+    page_has_public_info,
+    page_overview,
+    reports_by_user,
+    search_pages,
+    submit_report,
+)
 
 EVIDENCE_CONTENT_TYPES = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png"}
 REPORTS_PER_PAGE = 10
@@ -43,11 +53,19 @@ def page_detail(request, pk):
     return 404, matching the page list, except for administrators.
     """
     page = get_object_or_404(FacebookPage.objects.select_related("trust"), pk=pk)
-    overview = page_overview(page)
-    has_public_info = overview["verified_total"] or overview["allegations_total"] or overview["feedback_total"]
-    if not has_public_info and not (request.user.is_authenticated and request.user.is_platform_admin):
+    if not page_has_public_info(page) and not (request.user.is_authenticated and request.user.is_platform_admin):
         raise Http404("Page not found.")
-    return render(request, "reports/page_detail.html", {"page": page, **overview})
+
+    my_feedback = None
+    if request.user.is_authenticated:
+        my_feedback = Feedback.objects.filter(page=page, user=request.user).first()
+    context = {
+        "page": page,
+        "my_feedback": my_feedback,
+        "feedback_form": FeedbackForm(instance=my_feedback) if request.user.is_authenticated else None,
+        **page_overview(page),
+    }
+    return render(request, "reports/page_detail.html", context)
 
 
 @login_required

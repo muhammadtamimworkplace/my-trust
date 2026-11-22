@@ -1,0 +1,19 @@
+from django import forms
+
+from core.forms import BootstrapFormMixin
+
+from .models import Feedback
+
+
+class FeedbackForm(BootstrapFormMixin, forms.ModelForm):
+    """A user's overall opinion of a page: positive or negative, with an optional comment."""
+
+    sentiment = forms.ChoiceField(
+        label="Your experience", choices=Feedback.Sentiment.choices, widget=forms.RadioSelect,
+    )
+
+    class Meta:
+        model = Feedback
+        fields = ["sentiment", "comment"]
+        labels = {"comment": "Comment (optional)"}
+        widgets = {"comment": forms.Textarea(attrs={"rows": 3, "maxlength": 1000})}

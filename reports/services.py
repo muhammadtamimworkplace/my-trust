@@ -56,6 +56,18 @@ def search_pages(query="", category="", verification=""):
 SECTION_LIMIT = 20
 
 
+def page_has_public_info(page):
+    """True if the page has any public report (not rejected) or visible feedback.
+
+    Pages without any are not listed or opened publicly, so rejected complaints
+    cannot still "name" a page. Single source of truth for that rule.
+    """
+    return (
+        page.reports.exclude(status=ScamReport.Status.REJECTED).exists()
+        or page.feedback.filter(is_hidden=False).exists()
+    )
+
+
 def page_overview(page):
     """Public content of a page's detail view, in the three separate sections of guide §9.3.
 
